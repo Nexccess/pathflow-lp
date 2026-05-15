@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本政策金融公庫 融資コラム一覧 | Nexcess</title>
+<meta name="description" content="日本政策金融公庫の融資審査・事業計画書・資金繰り・建設業の資金調達など、融資申請に役立つ専門コラム26本。審査対策・書類準備・創業融資まで実務視点で解説。">
+<link rel="canonical" href="https://www.seisakukinyukouko.site/column/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',sans-serif;color:#1a1a1a;background:#f5f3e8;line-height:1.7;padding-bottom:72px}
+a{text-decoration:none}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:#1a5c1a;border-bottom:3px solid #009a3c;padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Noto Serif JP',serif;font-size:.9rem;font-weight:700;color:#fff;text-decoration:none}
+.nav-logo span{font-size:.65rem;color:rgba(255,255,255,.5);display:block;margin-top:1px;font-family:'Noto Sans JP',sans-serif;font-weight:400}
+.nav-back{font-size:.78rem;color:rgba(255,255,255,.7);text-decoration:none;border:1px solid rgba(255,255,255,.3);padding:.35rem .85rem;border-radius:2px;transition:all .2s;white-space:nowrap}
+.nav-back:hover{color:#fff;border-color:#fff}
+
+/* HERO */
+.hero{background:#1a5c1a;padding:3rem 1.5rem 2.5rem}
+.hero-inner{max-width:720px;margin:0 auto}
+.hero-lbl{font-size:.68rem;letter-spacing:.2em;color:rgba(255,255,255,.45);margin-bottom:.65rem;text-transform:uppercase}
+.hero-ttl{font-family:'Noto Serif JP',serif;font-size:clamp(1.35rem,3.5vw,1.9rem);font-weight:700;color:#fff;line-height:1.5;margin-bottom:.85rem}
+.hero-ttl em{color:#7dffaa;font-style:normal}
+.hero-lead{font-size:.85rem;color:rgba(255,255,255,.65);line-height:1.9;max-width:560px}
+.hero-count{display:inline-flex;align-items:center;gap:.5rem;margin-top:1.1rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:3px;padding:.35rem .85rem;font-size:.72rem;color:rgba(255,255,255,.7);letter-spacing:.06em}
+.hero-count strong{color:#7dffaa;font-family:'Noto Serif JP',serif;font-size:1.1rem;font-weight:700}
+
+/* FILTER */
+.filter-wrap{background:#fff;border-bottom:1.5px solid #d8e8d8;position:sticky;top:60px;z-index:90;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.filter-inner{display:flex;gap:0;max-width:720px;margin:0 auto;padding:0 1.5rem}
+.filter-btn{
+  flex-shrink:0;padding:.85rem 1.1rem;font-size:.78rem;font-weight:600;
+  color:#5a6a5a;background:none;border:none;border-bottom:2.5px solid transparent;
+  cursor:pointer;letter-spacing:.04em;transition:all .2s;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.filter-btn:hover{color:#1a5c1a}
+.filter-btn.active{color:#1a5c1a;border-bottom-color:#009a3c}
+.filter-count{font-size:.65rem;background:#e8f0e8;color:#3a5a3a;border-radius:8px;padding:.1rem .4rem;margin-left:.3rem;font-weight:700}
+.filter-btn.active .filter-count{background:#009a3c;color:#fff}
+
+/* MAIN */
+.main{max-width:720px;margin:0 auto;padding:2rem 1.5rem 3rem}
+
+/* CATEGORY HEADER */
+.cat-header{margin:2rem 0 1rem}
+.cat-header:first-child{margin-top:0}
+.cat-lbl{display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;letter-spacing:.18em;color:#009a3c;font-weight:700;text-transform:uppercase;margin-bottom:.5rem}
+.cat-lbl::before{content:"";width:20px;height:2px;background:#009a3c;display:block}
+.cat-ttl{font-family:'Noto Serif JP',serif;font-size:1rem;font-weight:700;color:#1a3a1a}
+
+/* COLUMN CARDS */
+.col-list{display:flex;flex-direction:column;gap:.65rem}
+.col-card{
+  display:flex;align-items:flex-start;gap:.9rem;
+  padding:1.1rem 1.25rem;
+  background:#fff;border:1.5px solid #d8e8d8;border-radius:3px;
+  text-decoration:none;
+  transition:border-color .2s,background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.col-card:hover{border-color:#009a3c;background:#f8fcf8}
+.col-card:active{background:#f0faf4}
+.col-num{
+  width:28px;height:28px;background:#e8f0e8;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;color:#3a6a3a;flex-shrink:0;
+  font-family:'Noto Sans JP',sans-serif;letter-spacing:-.02em;
+}
+.col-card.featured .col-num{background:#009a3c;color:#fff}
+.col-body{flex:1;min-width:0}
+.col-tag{display:inline-block;font-size:.62rem;font-weight:700;color:#009a3c;letter-spacing:.08em;margin-bottom:.3rem;text-transform:uppercase}
+.col-card.featured .col-tag{color:#7dffaa}
+.col-ttl{font-size:.88rem;font-weight:700;color:#1a3a1a;line-height:1.5;margin-bottom:.3rem}
+.col-desc{font-size:.78rem;color:#6a7a6a;line-height:1.65}
+.col-meta{display:flex;align-items:center;gap:.65rem;margin-top:.5rem}
+.col-date{font-size:.66rem;color:#9aaa9a;letter-spacing:.04em}
+.col-badge{font-size:.62rem;font-weight:700;padding:.1rem .45rem;border-radius:2px;background:#e8f0e8;color:#3a6a3a;letter-spacing:.04em}
+.col-badge.shinsa{background:#fdf0f0;color:#8a2a2a}
+.col-badge.shorui{background:#f0f0fd;color:#2a2a8a}
+.col-badge.kensetsu{background:#fffbf0;color:#8a5a00}
+.col-badge.featured{background:rgba(0,154,60,.12);color:#009a3c}
+.col-arr{margin-left:auto;color:#009a3c;flex-shrink:0;font-size:.9rem;align-self:center}
+
+/* HIDDEN */
+.col-card.hidden{display:none}
+
+/* CTA */
+.cta-strip{background:#1a5c1a;border-radius:3px;padding:1.75rem;margin-top:2.5rem;text-align:center}
+.cta-ttl{font-family:'Noto Serif JP',serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.65rem;line-height:1.55}
+.cta-ttl em{color:#7dffaa;font-style:normal}
+.cta-lead{font-size:.82rem;color:rgba(255,255,255,.65);margin-bottom:1.25rem;line-height:1.85}
+.btn-g{display:inline-flex;align-items:center;gap:.5rem;background:#009a3c;color:#fff;padding:.85rem 1.6rem;border-radius:3px;font-size:.88rem;font-weight:700;text-decoration:none;letter-spacing:.04em;border:2px solid #009a3c;transition:all .2s}
+.btn-g:hover{background:#00b347;border-color:#00b347}
+
+/* FLOATING BAR */
+#fcb{position:fixed;bottom:0;left:0;right:0;z-index:400;background:#fff;border-top:1.5px solid #d8e8d8;display:flex;box-shadow:0 -2px 12px rgba(0,0,0,.1);transition:transform .3s ease}
+.fcb-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;text-decoration:none;border-right:1px solid #e8f0e8;-webkit-tap-highlight-color:transparent;transition:background .15s;min-height:60px;justify-content:center}
+.fcb-btn:last-child{border-right:none}
+.fcb-btn:active{background:#f0faf4}
+.fcb-icon{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}
+.fcb-icon.line{background:#06c755}
+.fcb-icon.tg{background:#2ca5e0}
+.fcb-icon.mail{background:#1a5c1a}
+.fcb-icon.diag{background:#1a5c1a}
+.fcb-main{font-size:11px;color:#1a3a1a;font-weight:700}
+.fcb-sub{font-size:9px;color:#6a7a6a;margin-top:1px;text-align:center}
+
+@media(max-width:480px){
+  .main{padding:1.5rem 1.1rem 3rem}
+  .hero{padding:2.5rem 1.1rem 2rem}
+  .filter-inner{padding:0 .85rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">Nexcess<span>日本政策金融公庫 融資伴走支援</span></a>
+  <a href="/" class="nav-back">← LPに戻る</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-lbl">COLUMN</div>
+    <h1 class="hero-ttl">公庫融資に関する<br><em>専門コラム</em>一覧。</h1>
+    <p class="hero-lead">審査対策・事業計画書・資金繰り・建設業の資金調達まで、実務視点で解説します。</p>
+    <div class="hero-count"><strong>26</strong>本のコラムを公開中</div>
+  </div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-wrap">
+  <div class="filter-inner">
+    <button class="filter-btn active" data-cat="all" onclick="filterCat('all',this)">
+      すべて<span class="filter-count" id="cnt-all">26</span>
+    </button>
+    <button class="filter-btn" data-cat="featured" onclick="filterCat('featured',this)">
+      精選記事<span class="filter-count" id="cnt-featured">5</span>
+    </button>
+    <button class="filter-btn" data-cat="shikin" onclick="filterCat('shikin',this)">
+      資金調達<span class="filter-count" id="cnt-shikin">13</span>
+    </button>
+    <button class="filter-btn" data-cat="shinsa" onclick="filterCat('shinsa',this)">
+      審査対策<span class="filter-count" id="cnt-shinsa">8</span>
+    </button>
+    <button class="filter-btn" data-cat="shorui" onclick="filterCat('shorui',this)">
+      書類・計画書<span class="filter-count" id="cnt-shorui">4</span>
+    </button>
+    <button class="filter-btn" data-cat="kensetsu" onclick="filterCat('kensetsu',this)">
+      建設業<span class="filter-count" id="cnt-kensetsu">2</span>
+    </button>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- 精選コラム（今回作成の5本） -->
+  <div class="cat-header" id="section-featured" data-section="featured">
+    <div class="cat-lbl">FEATURED</div>
+    <div class="cat-ttl">精選コラム：否決・審査・書類の核心</div>
+  </div>
+  <div class="col-list">
+
+    <a href="/column/kouko-shinsa-toranai-riyu.html" class="col-card featured" data-cat="featured shinsa">
+      <div class="col-num">★</div>
+      <div class="col-body">
+        <div class="col-tag">FEATURED</div>
+        <div class="col-ttl">日本政策金融公庫の審査が通らない理由と対策</div>
+        <div class="col-desc">否決パターン5つを整理。計画書の構造・制度選定・面談・資金繰り表・信用情報への対処法を実務視点で解説。</div>
+        <div class="col-meta"><span class="col-date">2026.05</span><span class="col-badge featured">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/jigyo-keikakusho-kakikata.html" class="col-card featured" data-cat="featured shorui">
+      <div class="col-num">★</div>
+      <div class="col-body">
+        <div class="col-tag">FEATURED</div>
+        <div class="col-ttl">事業計画書の書き方：融資が通るポイント</div>
+        <div class="col-desc">審査官が見る3軸（魅力・実現可能性・返済能力）を逆算した事業計画書の構成と数値作り込みを解説。</div>
+        <div class="col-meta"><span class="col-date">2026.05</span><span class="col-badge shorui">書類・計画書</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/kouko-hosho-chigai.html" class="col-card featured" data-cat="featured shinsa">
+      <div class="col-num">★</div>
+      <div class="col-body">
+        <div class="col-tag">FEATURED</div>
+        <div class="col-ttl">信用保証協会と政策公庫：どちらに申請すべきか</div>
+        <div class="col-desc">制度の根本的な違い・ケース別の選択基準・同時申請の可否まで比較表で整理。</div>
+        <div class="col-meta"><span class="col-date">2026.05</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/kouko-sougyo-hitsuyoshorui.html" class="col-card featured" data-cat="featured shorui">
+      <div class="col-num">★</div>
+      <div class="col-body">
+        <div class="col-tag">FEATURED</div>
+        <div class="col-ttl">政策金融公庫 創業融資の必要書類一覧</div>
+        <div class="col-desc">業種・法人・個人事業主別の必要書類を一覧化。よくある不備パターンと申請前チェックリスト付き。</div>
+        <div class="col-meta"><span class="col-date">2026.05</span><span class="col-badge shorui">書類・計画書</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/kensetsu-hitorioya-shikinzuri.html" class="col-card featured" data-cat="featured kensetsu">
+      <div class="col-num">★</div>
+      <div class="col-body">
+        <div class="col-tag">FEATURED</div>
+        <div class="col-ttl">建設業・一人親方の資金繰りと融資方法</div>
+        <div class="col-desc">入金サイクルが長い建設業特有の資金繰り問題と、公庫・マル経・保証協会の活用方法を整理。</div>
+        <div class="col-meta"><span class="col-date">2026.05</span><span class="col-badge kensetsu">建設業</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+  </div>
+
+  <!-- 資金調達ノウハウ -->
+  <div class="cat-header" id="section-shikin" data-section="shikin">
+    <div class="cat-lbl">SHIKIN</div>
+    <div class="cat-ttl">資金調達ノウハウ</div>
+  </div>
+  <div class="col-list">
+
+    <a href="/column/column-01-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">01</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">資金繰り表：銀行が見るポイント</div>
+        <div class="col-desc">銀行が融資判断で資金繰り表のどこを見るか。キャッシュフロー・将来予測・返済原資の3点を解説。</div>
+        <div class="col-meta"><span class="col-date">2026.04.01</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-02-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">02</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">日本政策金融公庫の融資審査、どのような会社が検討されるのか</div>
+        <div class="col-desc">公庫の融資審査で重視される事業計画・経営者資質・財務状況の3つの視点を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.02</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-03-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">03</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">政策金融公庫の審査で注目される財務指標について</div>
+        <div class="col-desc">収益性・安全性・資金繰り・返済能力——公庫が審査で確認する財務指標の見方を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.03</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-05-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">05</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">政策金融公庫とは——民間銀行との違いと向いているケース</div>
+        <div class="col-desc">政府100%出資の政策金融公庫の特徴と、民間金融機関との違い、向いているケースを整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.05</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-06-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">06</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">政策金融公庫の融資、利用できるのはどんな人？</div>
+        <div class="col-desc">対象事業者・融資を受けるための一般的な条件・融資の種類と特徴を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.06</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-07-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">07</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">政策金融公庫と銀行融資、それぞれの特徴を知る</div>
+        <div class="col-desc">創業期か事業拡大期かで最適解は変わる。公庫と民間銀行それぞれの特徴と選び方を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.07</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-08-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">08</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">創業初期の資金調達における政策金融公庫の活用</div>
+        <div class="col-desc">創業間もない企業でも公庫融資は可能か。審査のポイントと準備の進め方を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.08</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-16-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">16</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">政策金融公庫の利用を検討する際のポイント</div>
+        <div class="col-desc">事業計画・資金使途・返済計画・過去の取引状況——利用前に確認しておきたい検討事項を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.16</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-19-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">19</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">政策金融公庫への相談前に確認しておきたい3つの数字</div>
+        <div class="col-desc">売上高の推移・利益率・借入金と返済計画——相談前に整理しておくべき3つの数字を解説する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.19</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-20-shikin.html" class="col-card" data-cat="shikin">
+      <div class="col-num">20</div>
+      <div class="col-body">
+        <div class="col-tag">資金調達ノウハウ</div>
+        <div class="col-ttl">融資相談に臨む前に！知っておきたい事前準備のヒント</div>
+        <div class="col-desc">事業の見える化・資金の使い道・返済計画のイメージ——融資相談をスムーズに進めるための準備チェックリスト。</div>
+        <div class="col-meta"><span class="col-date">2026.04.20</span><span class="col-badge">資金調達</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+  </div>
+
+  <!-- 審査対策 -->
+  <div class="cat-header" id="section-shinsa" data-section="shinsa">
+    <div class="cat-lbl">SHINSA</div>
+    <div class="cat-ttl">審査対策</div>
+  </div>
+  <div class="col-list">
+
+    <a href="/column/column-04-shikin.html" class="col-card" data-cat="shinsa">
+      <div class="col-num">04</div>
+      <div class="col-body">
+        <div class="col-tag">審査対策</div>
+        <div class="col-ttl">政策金融公庫の審査通過後、次に検討したいこと</div>
+        <div class="col-desc">審査が通らなかった場合の選択肢——他の金融機関・補助金・クラウドファンディングの活用を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.04</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-09-shikin.html" class="col-card" data-cat="shinsa">
+      <div class="col-num">09</div>
+      <div class="col-body">
+        <div class="col-tag">審査対策</div>
+        <div class="col-ttl">赤字決算でも政策金融公庫の融資は検討できるのか</div>
+        <div class="col-desc">赤字だからといって融資の可能性が閉ざされるわけではない。審査で見られるポイントを整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.09</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-10-shikin.html" class="col-card" data-cat="shinsa">
+      <div class="col-num">10</div>
+      <div class="col-body">
+        <div class="col-tag">審査対策</div>
+        <div class="col-ttl">政策金融公庫の審査期間について</div>
+        <div class="col-desc">審査プロセス・期間に影響する要素・審査中の注意点を整理する。余裕を持った準備が鍵。</div>
+        <div class="col-meta"><span class="col-date">2026.04.10</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-11-shikin.html" class="col-card" data-cat="shinsa">
+      <div class="col-num">11</div>
+      <div class="col-body">
+        <div class="col-tag">審査対策</div>
+        <div class="col-ttl">政策金融公庫の面談でよく聞かれる質問と回答例</div>
+        <div class="col-desc">事業内容・資金使途・返済計画・経営者の経験——面談で想定される質問と回答準備のポイントを整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.11</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-13-shikin.html" class="col-card" data-cat="shinsa">
+      <div class="col-num">13</div>
+      <div class="col-body">
+        <div class="col-tag">審査対策</div>
+        <div class="col-ttl">政策金融公庫の融資における「使途不明金」への向き合い方</div>
+        <div class="col-desc">資金の使途が不明確だと審査で慎重に扱われる理由と、事前に整理しておくべき点を解説する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.13</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-14-shikin.html" class="col-card" data-cat="shinsa">
+      <div class="col-num">14</div>
+      <div class="col-body">
+        <div class="col-tag">審査対策</div>
+        <div class="col-ttl">政策金融公庫の審査：借入が多い会社の場合</div>
+        <div class="col-desc">借入の多さだけで判断されるわけではない。公庫が借入状況をどう評価するかを整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.14</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-15-shikin.html" class="col-card" data-cat="shinsa">
+      <div class="col-num">15</div>
+      <div class="col-body">
+        <div class="col-tag">審査対策</div>
+        <div class="col-ttl">税金滞納と政策金融公庫の融資について</div>
+        <div class="col-desc">税金の滞納は融資審査にどう影響するか。状況の整理と前向きな対応策を解説する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.15</span><span class="col-badge shinsa">審査対策</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-04-shikin.html" class="col-card" data-cat="shinsa" style="display:none"></a>
+
+  </div>
+
+  <!-- 書類・計画書 -->
+  <div class="cat-header" id="section-shorui" data-section="shorui">
+    <div class="cat-lbl">SHORUI</div>
+    <div class="cat-ttl">書類・計画書</div>
+  </div>
+  <div class="col-list">
+
+    <a href="/column/column-12-shikin.html" class="col-card" data-cat="shorui">
+      <div class="col-num">12</div>
+      <div class="col-body">
+        <div class="col-tag">書類・計画書</div>
+        <div class="col-ttl">事業計画書、どこまで作り込むのが良い？</div>
+        <div class="col-desc">詳細すぎても簡潔すぎても伝わらない。目的別・状況別の事業計画書の作り込み方を整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.12</span><span class="col-badge shorui">書類・計画書</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-17-shikin.html" class="col-card" data-cat="shorui">
+      <div class="col-num">17</div>
+      <div class="col-body">
+        <div class="col-tag">書類・計画書</div>
+        <div class="col-ttl">融資相談に向けた財務数字の整理</div>
+        <div class="col-desc">損益計算書・貸借対照表・将来の資金繰り計画——融資相談前に準備しておくべき財務数字を解説する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.17</span><span class="col-badge shorui">書類・計画書</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+    <a href="/column/column-18-shikin.html" class="col-card" data-cat="shorui">
+      <div class="col-num">18</div>
+      <div class="col-body">
+        <div class="col-tag">書類・計画書</div>
+        <div class="col-ttl">融資審査で「数字の説明」が重視される理由</div>
+        <div class="col-desc">数字を羅列するだけでは伝わらない。融資担当者が「説明の質」から何を読み取るかを整理する。</div>
+        <div class="col-meta"><span class="col-date">2026.04.18</span><span class="col-badge shorui">書類・計画書</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+  </div>
+
+  <!-- 建設業 -->
+  <div class="cat-header" id="section-kensetsu" data-section="kensetsu">
+    <div class="cat-lbl">KENSETSU</div>
+    <div class="cat-ttl">建設業・一人親方</div>
+  </div>
+  <div class="col-list">
+
+    <a href="/column/kensetsu-shikin.html" class="col-card" data-cat="kensetsu">
+      <div class="col-num">建</div>
+      <div class="col-body">
+        <div class="col-tag">建設業</div>
+        <div class="col-ttl">中小建設企業の資金繰り表：銀行・金融機関が見るポイント</div>
+        <div class="col-desc">資金繰りは事業継続の根幹。銀行が審査で確認する4つの視点を整理します。</div>
+        <div class="col-meta"><span class="col-date">2026.04.29</span><span class="col-badge kensetsu">建設業</span></div>
+      </div>
+      <div class="col-arr">›</div>
+    </a>
+
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-strip">
+    <div class="cta-ttl">コラムを読んで、<em>次の一手</em>が見えたら。</div>
+    <p class="cta-lead">初回相談は無料。現状の書類・状況を持参の上、申請可能性を確認できます。</p>
+    <a href="https://lin.ee/7V7MmBT" target="_blank" rel="noopener" class="btn-g">LINE で無料相談を始める</a>
+  </div>
+
+</main>
+
+<!-- FLOATING BAR -->
+<nav id="fcb">
+  <a href="https://lin.ee/7V7MmBT" target="_blank" rel="noopener" class="fcb-btn">
+    <div class="fcb-icon line"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 5.92 2 10.72c0 3.02 1.72 5.67 4.35 7.26L5.5 22l4.18-2.09c.75.2 1.53.31 2.32.31 5.52 0 10-3.92 10-8.72S17.52 2 12 2z"/></svg></div>
+    <span class="fcb-main">LINE相談</span>
+    <span class="fcb-sub">無料・即時</span>
+  </a>
+  <a href="https://t.me/nex_naka" target="_blank" rel="noopener" class="fcb-btn">
+    <div class="fcb-icon tg"><svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.68 7.92c-.12.58-.47.72-.96.45l-2.65-1.95-1.28 1.23c-.14.14-.26.26-.54.26l.19-2.71 4.93-4.46c.21-.19-.05-.3-.33-.11l-6.1 3.84-2.63-.82c-.57-.18-.58-.57.12-.84l10.27-3.96c.47-.17.89.11.66.15z"/></svg></div>
+    <span class="fcb-main">Telegram</span>
+    <span class="fcb-sub">守秘優先</span>
+  </a>
+  <a href="/" class="fcb-btn">
+    <div class="fcb-icon mail"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 9l9 6 9-6M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg></div>
+    <span class="fcb-main">LP TOP</span>
+    <span class="fcb-sub">トップへ</span>
+  </a>
+  <a href="/diagnosis.html" class="fcb-btn">
+    <div class="fcb-icon diag"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg></div>
+    <span class="fcb-main">AI診断</span>
+    <span class="fcb-sub">無料・1分</span>
+  </a>
+</nav>
+
+<script>
+function filterCat(cat, btn) {
+  // ボタンのactive切り替え
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const cards = document.querySelectorAll('.col-card');
+  const headers = document.querySelectorAll('.cat-header');
+
+  if (cat === 'all') {
+    cards.forEach(c => c.classList.remove('hidden'));
+    headers.forEach(h => h.style.display = '');
+  } else {
+    cards.forEach(c => {
+      const cats = c.getAttribute('data-cat') || '';
+      c.classList.toggle('hidden', !cats.includes(cat));
+    });
+    headers.forEach(h => {
+      const sec = h.getAttribute('data-section');
+      // そのセクションに表示カードがあるか確認
+      const visible = document.querySelectorAll(`.col-card:not(.hidden)[data-cat*="${sec}"]`);
+      h.style.display = (cat === sec || cat === 'all') ? '' : 'none';
+    });
+  }
+
+  // スクロールをトップに
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Floating bar scroll hide/show
+let lastY = 0;
+const bar = document.getElementById('fcb');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  bar.style.transform = (y > lastY && y > 100) ? 'translateY(110%)' : 'translateY(0)';
+  lastY = y;
+}, { passive: true });
+</script>
+
+</body>
+</html>

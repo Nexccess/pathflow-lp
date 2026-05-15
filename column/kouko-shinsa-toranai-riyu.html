@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本政策金融公庫の審査が通らない理由と対策 | Nexcess コラム</title>
+<meta name="description" content="日本政策金融公庫の融資審査で否決される主な理由を5つに整理。事業計画書の構造問題・制度選定ミス・面談対策まで、実務視点で解説します。">
+<link rel="canonical" href="https://www.seisakukinyukouko.site/columns/kouko-shinsa-toranai-riyu.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;color:#1a1a1a;background:#f5f3e8;line-height:1.7}
+a{color:#009a3c;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.nav{position:sticky;top:0;z-index:100;background:#1a5c1a;border-bottom:3px solid #009a3c;padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Noto Serif JP',serif;font-size:.9rem;font-weight:700;color:#fff;text-decoration:none}
+.nav-logo span{font-size:.65rem;color:rgba(255,255,255,.5);display:block;margin-top:1px;font-family:'Noto Sans JP',sans-serif;font-weight:400}
+.nav-back{font-size:.78rem;color:rgba(255,255,255,.7);text-decoration:none;border:1px solid rgba(255,255,255,.3);padding:.35rem .85rem;border-radius:2px;transition:all .2s}
+.nav-back:hover{color:#fff;border-color:#fff;text-decoration:none}
+
+.hero{background:#1a5c1a;padding:3.5rem 1.5rem 3rem}
+.hero-inner{max-width:720px;margin:0 auto}
+.hero-cat{font-size:.68rem;letter-spacing:.18em;color:rgba(255,255,255,.5);margin-bottom:.75rem;text-transform:uppercase}
+.hero-ttl{font-family:'Noto Serif JP',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;color:#fff;line-height:1.5;margin-bottom:1rem}
+.hero-ttl em{color:#7dffaa;font-style:normal}
+.hero-meta{display:flex;gap:1rem;flex-wrap:wrap}
+.hero-meta span{font-size:.72rem;color:rgba(255,255,255,.45);letter-spacing:.06em}
+
+.body-wrap{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+
+.lead-box{background:#fff;border-left:4px solid #009a3c;padding:1.25rem 1.5rem;margin-bottom:2.5rem;border-radius:0 3px 3px 0;font-size:.9rem;line-height:2;color:#3a4a3a}
+.lead-box strong{color:#1a5c1a}
+
+h2{font-family:'Noto Serif JP',serif;font-size:1.15rem;font-weight:700;color:#1a3a1a;margin:2.5rem 0 .9rem;padding-bottom:.6rem;border-bottom:2px solid #009a3c;display:flex;align-items:center;gap:.6rem}
+h2 .num{width:28px;height:28px;background:#009a3c;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0;font-family:'Noto Sans JP',sans-serif}
+h3{font-family:'Noto Serif JP',serif;font-size:1rem;font-weight:700;color:#1a3a1a;margin:1.75rem 0 .65rem;padding-left:.75rem;border-left:3px solid #009a3c}
+p{font-size:.88rem;color:#4a5a4a;line-height:2;margin-bottom:1rem}
+p:last-child{margin-bottom:0}
+
+.fix-box{background:#f0faf4;border:1.5px solid #b0dfc0;border-radius:3px;padding:1rem 1.25rem;margin:.75rem 0 1.5rem;font-size:.83rem;color:#1a5c1a;line-height:1.9}
+.fix-box::before{content:"→ 対策：";font-weight:700;display:block;margin-bottom:.3rem;font-size:.75rem;letter-spacing:.06em}
+
+.summary-box{background:#1a5c1a;color:#fff;padding:1.5rem 1.75rem;border-radius:3px;margin:2.5rem 0}
+.summary-box h3{font-family:'Noto Serif JP',serif;font-size:.95rem;font-weight:700;color:#7dffaa;border:none;padding:0;margin:0 0 1rem}
+.summary-box ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.summary-box ul li{font-size:.83rem;color:rgba(255,255,255,.82);display:flex;align-items:flex-start;gap:.5rem;line-height:1.7}
+.summary-box ul li::before{content:"✓";color:#7dffaa;flex-shrink:0;font-weight:700}
+
+.col-links{margin-top:3rem;padding-top:2rem;border-top:1px solid #d8e8d8}
+.col-links-ttl{font-size:.72rem;letter-spacing:.15em;color:#009a3c;margin-bottom:1rem;font-weight:700}
+.col-link-list{display:flex;flex-direction:column;gap:.6rem}
+.col-link-item{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.1rem;background:#fff;border:1.5px solid #d8e8d8;border-radius:3px;text-decoration:none;transition:border-color .2s}
+.col-link-item:hover{border-color:#009a3c;text-decoration:none}
+.col-link-item-ttl{font-size:.84rem;font-weight:700;color:#1a3a1a}
+.col-link-item-arr{margin-left:auto;color:#009a3c;flex-shrink:0}
+
+.cta-strip{background:#fff;border:1.5px solid #d8e8d8;border-radius:3px;padding:1.75rem;margin-top:2.5rem;text-align:center}
+.cta-strip p{font-size:.85rem;color:#5a6a5a;margin-bottom:1.25rem}
+.btn-g{display:inline-flex;align-items:center;gap:.5rem;background:#009a3c;color:#fff;padding:.85rem 1.6rem;border-radius:3px;font-size:.88rem;font-weight:700;text-decoration:none;letter-spacing:.04em;border:2px solid #009a3c;transition:all .2s}
+.btn-g:hover{background:#00b347;border-color:#00b347;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">Nexcess<span>日本政策金融公庫 融資伴走支援</span></a>
+  <a href="/" class="nav-back">← LPに戻る</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-cat">COLUMN — 融資審査</div>
+    <h1 class="hero-ttl">日本政策金融公庫の審査が<br><em>通らない理由</em>と、その対策。</h1>
+    <div class="hero-meta">
+      <span>更新日：2026年5月</span>
+      <span>執筆：Nexcess 融資支援チーム</span>
+    </div>
+  </div>
+</div>
+
+<div class="body-wrap">
+
+  <div class="lead-box">
+    日本政策金融公庫の融資審査で否決される理由の多くは、<strong>事業計画書の構造的な問題と申請制度の選定ミス</strong>です。能力や事業の優劣ではなく、「書き方」と「申請ルート」の問題がほとんどです。このコラムでは、否決パターンを5つに整理し、それぞれの具体的な対策を解説します。
+  </div>
+
+  <h2><span class="num">1</span>事業計画書の数値根拠が弱い</h2>
+  <p>審査官が最も重視するのは「なぜこの売上・利益が見込めるのか」という数値の根拠です。「3年後に売上1,000万円を目指す」という記載だけでは不十分で、その根拠となる市場データ・顧客単価・受注見込みの積み上げが必要です。</p>
+  <p>感覚論・楽観的な見通しだけが書かれている計画書は、審査の段階で「根拠が不明確」と判断されます。公庫の審査官は年間数百件の計画書を見ており、数値の作り込みの甘さはすぐに見抜かれます。</p>
+  <div class="fix-box">市場データ・競合比較・月次シミュレーションを組み合わせ、売上根拠を「積み上げ方式」で構築します。「なぜこの数値か」を1行ずつ説明できる状態にすることが目標です。</div>
+
+  <h2><span class="num">2</span>申請する制度の選定ミス</h2>
+  <p>日本政策金融公庫には「新創業融資制度」「一般貸付」「マル経融資（小規模事業者経営改善資金）」「女性・若者・シニア起業家支援資金」など複数の制度があります。事業の状況・創業フェーズ・過去の借入状況によって適切な制度は異なります。</p>
+  <p>誤った制度に申請すると、本来通過できた案件が否決されるケースがあります。たとえば、創業間もない段階で「一般貸付」に申請してしまい、実績不足で弾かれるケースは典型例です。</p>
+  <div class="fix-box">事業フェーズ・資金用途・自己資金比率・既存借入状況を整理した上で、最適な制度を選定します。複数制度の併用が有効なケースもあります。</div>
+
+  <h2><span class="num">3</span>面談での説明不足・伝え方のブレ</h2>
+  <p>書類上の問題がなくても、面談での受け答えが審査結果に影響します。公庫の担当者は「この経営者に貸して大丈夫か」を面談の中で総合的に判断しています。</p>
+  <p>よくある失敗パターンは、①「書類に書いてある通りです」という受け身の回答、②事業計画書と口頭説明の数値のズレ、③質問に対して即答できず沈黙が続くケースです。面談は準備次第で結果が変わります。</p>
+  <div class="fix-box">想定問答を30問以上準備し、面談シミュレーションを行います。数値の根拠・競合との差別化・返済計画を口頭で即座に説明できる状態を目標とします。</div>
+
+  <h2><span class="num">4</span>返済計画と資金繰り表の整合性がない</h2>
+  <p>融資を受けた後「どうやって返すか」が明確に示せていないケースは多くあります。損益計算書上は黒字でも、実際のキャッシュフローが返済額を下回る計画は、審査官から「実現性が低い」と判断されます。</p>
+  <p>特に、月次の資金繰り表（入出金の時系列）と損益計画の数値が矛盾しているケースは即アウトです。「利益は出ているが、入金が遅く返済が難しい月がある」という構造を正直に示し、その対策を明記することが重要です。</p>
+  <div class="fix-box">月次資金繰り表を損益計画・返済スケジュールと連動させて作成します。「最も資金が逼迫する月」を特定し、その対応策を書面で示します。</div>
+
+  <h2><span class="num">5</span>過去の借入・信用情報への説明不足</h2>
+  <p>過去に延滞・債務整理・借入がある場合でも、適切に説明することで審査を通過できるケースがあります。逆に、信用情報に問題があるにもかかわらず書類上で触れずに提出すると、面談で発覚した際に信頼を大きく損ないます。</p>
+  <p>公庫の審査官は信用情報機関（CIC・KSC・JICC）を参照します。審査前に自身の信用情報を取得・確認しておくことが重要です。延滞の事実がある場合は、その経緯と現状の改善を書面で補足することで、審査官の懸念を事前に払拭できます。</p>
+  <div class="fix-box">申請前に信用情報を取得し、問題点を洗い出します。延滞・借入の経緯を時系列で整理した補足書面を準備し、審査官への先手の説明資料として活用します。</div>
+
+  <div class="summary-box">
+    <h3>まとめ：否決の主因は「書類の構造問題」</h3>
+    <ul>
+      <li>数値根拠の弱さ → 市場データ・積み上げ方式で補強</li>
+      <li>制度選定ミス → 事業フェーズに合った制度の選択</li>
+      <li>面談対策不足 → 想定問答・シミュレーション</li>
+      <li>資金繰り表の不整合 → 月次CF表と損益計画の連動</li>
+      <li>信用情報の説明漏れ → 先手の補足書面で対応</li>
+    </ul>
+  </div>
+
+  <p>一度否決されたケースでも、原因を特定すれば再申請または保証協会への切り替えで融資が実現するケースがあります。現状の書類・状況を持参の上、初回無料相談でご確認ください。</p>
+
+  <div class="col-links">
+    <div class="col-links-ttl">RELATED COLUMNS — 関連コラム</div>
+    <div class="col-link-list">
+      <a href="/columns/jigyo-keikakusho-kakikata.html" class="col-link-item">
+        <div class="col-link-item-ttl">事業計画書の書き方：融資が通るポイント</div>
+        <span class="col-link-item-arr">›</span>
+      </a>
+      <a href="/columns/kouko-hosho-chigai.html" class="col-link-item">
+        <div class="col-link-item-ttl">信用保証協会と政策公庫：どちらに申請すべきか</div>
+        <span class="col-link-item-arr">›</span>
+      </a>
+      <a href="/columns/kouko-sougyo-hitsuyoshorui.html" class="col-link-item">
+        <div class="col-link-item-ttl">政策金融公庫 創業融資の必要書類一覧</div>
+        <span class="col-link-item-arr">›</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <p>書類の状況・過去の申請履歴を持参の上、初回無料相談でご確認ください。<br>否決案件の再設計も対応しています。</p>
+    <a href="https://lin.ee/7V7MmBT" target="_blank" rel="noopener" class="btn-g">LINE で無料相談を始める</a>
+  </div>
+
+</div>
+</body>
+</html>

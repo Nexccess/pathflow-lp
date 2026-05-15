@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ★ 記事ごとに変える -->
+<title>【記事タイトル】 | Nexcess 保証協会融資コラム</title>
+<meta name="description" content="記事の概要（120文字以内）">
+<!-- ★ ここまで -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;color:#1a1a1a;background:#f5f3e8;line-height:1.7}
+.nav{background:#1a5c1a;border-bottom:3px solid #009a3c;padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav a{text-decoration:none}
+.nav-logo{display:flex;align-items:center;gap:.75rem}
+.nav-mark{width:36px;height:36px;background:#fff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif JP',serif;font-weight:700;font-size:.82rem;color:#1a5c1a}
+.nav-name{color:#fff;font-size:.92rem;font-weight:600;letter-spacing:.06em}
+.nav-btn{background:#fff;color:#1a5c1a;padding:.45rem 1.1rem;border-radius:3px;font-size:.8rem;font-weight:700;letter-spacing:.04em}
+
+/* 記事ヘッダー */
+.article-header{background:#1a5c1a;padding:4rem 2rem 3rem;position:relative;overflow:hidden}
+.article-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:48px 48px}
+.article-header-in{position:relative;z-index:1;max-width:760px;margin:0 auto}
+.art-breadcrumb{font-size:.72rem;color:rgba(255,255,255,.5);margin-bottom:1rem}
+.art-breadcrumb a{color:rgba(255,255,255,.55);text-decoration:none}
+.art-breadcrumb a:hover{color:#fff}
+.art-tag{display:inline-block;background:#009a3c;color:#fff;font-size:.65rem;font-weight:700;padding:.25rem .65rem;border-radius:2px;letter-spacing:.1em;margin-bottom:1rem}
+.art-title{font-family:'Noto Serif JP',serif;font-size:clamp(1.4rem,3.5vw,1.9rem);font-weight:700;color:#fff;line-height:1.45;margin-bottom:1rem}
+.art-meta{font-size:.75rem;color:rgba(255,255,255,.5);display:flex;gap:1.5rem;flex-wrap:wrap}
+
+/* 記事本文レイアウト */
+.article-wrap{max-width:1100px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:1fr 280px;gap:3rem;align-items:start}
+@media(max-width:860px){.article-wrap{grid-template-columns:1fr}}
+
+/* 本文 */
+.article-body{background:#fff;border:1.5px solid #d8e8d8;border-radius:3px;padding:2.5rem}
+.article-body h2{font-family:'Noto Serif JP',serif;font-size:1.2rem;font-weight:700;color:#1a3a1a;margin:2.5rem 0 1rem;padding-bottom:.6rem;border-bottom:2px solid #009a3c}
+.article-body h3{font-size:1rem;font-weight:700;color:#1a3a1a;margin:1.75rem 0 .75rem}
+.article-body p{font-size:.9rem;color:#3a4a3a;line-height:1.95;margin-bottom:1.1rem}
+.article-body ul,.article-body ol{padding-left:1.5rem;margin-bottom:1.1rem}
+.article-body li{font-size:.88rem;color:#3a4a3a;line-height:1.85;margin-bottom:.35rem}
+.article-body strong{color:#1a5c1a;font-weight:700}
+.article-body .note-box{
+  background:#f0faf4;border-left:4px solid #009a3c;
+  padding:1rem 1.25rem;border-radius:0 3px 3px 0;
+  margin:1.5rem 0;font-size:.85rem;color:#3a4a3a;line-height:1.85;
+}
+.article-body .warn-box{
+  background:#fdf6e3;border-left:4px solid #c8922a;
+  padding:1rem 1.25rem;border-radius:0 3px 3px 0;
+  margin:1.5rem 0;font-size:.85rem;color:#5a4a2a;line-height:1.85;
+}
+
+/* サイドバー */
+.sidebar{}
+.sidebar-card{background:#fff;border:1.5px solid #d8e8d8;border-radius:3px;padding:1.5rem;margin-bottom:1.25rem}
+.sidebar-ttl{font-size:.75rem;font-weight:700;letter-spacing:.1em;color:#009a3c;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid #d8e8d8}
+.sidebar-cta{
+  display:block;background:#009a3c;color:#fff;text-align:center;
+  padding:.85rem;border-radius:3px;font-size:.85rem;font-weight:700;
+  text-decoration:none;margin-bottom:.75rem;transition:opacity .2s;
+}
+.sidebar-cta:hover{opacity:.88}
+.sidebar-cta.secondary{background:#1a5c1a}
+.sidebar-note{font-size:.72rem;color:#8a9a8a;line-height:1.65;text-align:center}
+.related-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+.related-list li a{font-size:.82rem;color:#1a5c1a;text-decoration:none;line-height:1.5;display:flex;gap:.4rem;align-items:flex-start}
+.related-list li a::before{content:"→";flex-shrink:0;color:#009a3c}
+.related-list li a:hover{text-decoration:underline}
+
+/* 記事下CTA */
+.article-cta{
+  background:#1a5c1a;border-radius:3px;padding:2rem;margin-top:2.5rem;
+  text-align:center;color:#fff;
+}
+.article-cta-ttl{font-family:'Noto Serif JP',serif;font-size:1.1rem;font-weight:700;margin-bottom:.75rem;line-height:1.45}
+.article-cta-desc{font-size:.83rem;color:rgba(255,255,255,.72);line-height:1.85;margin-bottom:1.5rem}
+.article-cta-btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.btn-g{display:inline-flex;align-items:center;gap:.4rem;background:#009a3c;color:#fff;padding:.75rem 1.5rem;border-radius:3px;font-size:.85rem;font-weight:700;text-decoration:none;border:2px solid #009a3c;transition:opacity .2s}
+.btn-g:hover{opacity:.88}
+.btn-w{display:inline-flex;align-items:center;gap:.4rem;background:transparent;color:#fff;padding:.75rem 1.5rem;border-radius:3px;font-size:.85rem;font-weight:600;text-decoration:none;border:2px solid rgba(255,255,255,.4);transition:all .2s}
+.btn-w:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+
+footer{background:#0d2e0d;padding:1.75rem 2rem;text-align:center;border-top:3px solid #009a3c;margin-top:4rem}
+.ft-name{font-family:'Noto Serif JP',serif;font-size:.92rem;color:#fff;letter-spacing:.1em;margin-bottom:.35rem}
+.ft-copy{font-size:.68rem;color:rgba(255,255,255,.25);letter-spacing:.08em}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-mark">NX</div>
+    <div><span class="nav-name">Nexcess</span></div>
+  </a>
+  <a href="../diagnosis.html" class="nav-btn">無料AI診断</a>
+</nav>
+
+<!-- 記事ヘッダー -->
+<div class="article-header">
+  <div class="article-header-in">
+    <div class="art-breadcrumb">
+      <a href="../index.html">TOP</a> &rsaquo;
+      <a href="index.html">コラム</a> &rsaquo;
+      記事タイトル
+    </div>
+    <!-- ★ 記事ごとに変える -->
+    <span class="art-tag">建設業</span>
+    <h1 class="art-title">中小建設企業の資金繰り表：銀行・金融機関が見るポイント</h1>
+    <div class="art-meta">
+      <span>2026.04.29</span>
+      <span>著者：中村 景太（合同会社 Nexcess）</span>
+    </div>
+    <!-- ★ ここまで -->
+  </div>
+</div>
+
+<div class="article-wrap">
+
+  <!-- ══ 本文 ══ -->
+  <article class="article-body">
+
+    <!-- ★★★ ここから本文を差し替える ★★★ -->
+    <p>中小建設企業の経営において、資金繰りは事業継続の根幹をなす重要な要素です。日々の取引や工事の進捗に伴って、お金の出入りは常に変動します。このお金の動きを可視化し、将来の予測を立てるために活用されるのが「資金繰り表」です。</p>
+    <p>銀行や金融機関が中小建設企業の資金繰り表を確認する際、どのような点に注目しているのでしょうか。ここでは、一般的に考慮されるであろうポイントをいくつか整理してみましょう。</p>
+
+    <h2>資金繰り表の基本的な構成要素</h2>
+    <p>資金繰り表は、一定期間（例えば1ヶ月、3ヶ月、半年など）における現金の収入と支出を記録し、期末の残高を予測する表です。主に、「収入（売上入金、借入金など）」と「支出（人件費、材料費、外注費、経費、借入金返済など）」に分けて記載されます。これにより、現金の不足が生じる可能性のある時期や、逆に余裕のある時期を把握することができます。</p>
+
+    <h2>銀行・金融機関が注目する視点</h2>
+    <h3>1. 過去の実績と将来予測の整合性</h3>
+    <p>過去の資金繰りの実績が、将来の予測とどの程度一致しているかは、経営の計画性と実行力を測る上で注目される点です。実績と乖離が大きい場合、その要因や今後の対策について説明を求められる可能性があります。</p>
+    <h3>2. 収入と支出のバランス</h3>
+    <p>売上入金が安定しているか、また、人件費や材料費といった主要な支出が計画通りに管理されているか、といった収入と支出のバランスは、事業の健全性を示す指標となります。特に、工事の進捗に伴う入金サイトと、仕入先への支払サイトのズレが、資金繰りにどのような影響を与えるかは、建設業特有の注意点と言えるでしょう。</p>
+    <h3>3. 借入金への依存度と返済能力</h3>
+    <p>現在借り入れている資金の額や、今後の借入予定、そしてその返済計画は、金融機関にとって重要な関心事です。資金繰り表から、借入金への依存度や、将来的に借入金を返済していくためのキャッシュフローが確保できているかどうかが判断されます。</p>
+    <h3>4. 緊急時の対応策</h3>
+    <p>予期せぬ支出や収入の減少といった、資金繰りが悪化する可能性のある事態への備えも、見られるポイントの一つです。例えば、手元資金の余裕や、追加の借入枠の有無などが、緊急時の対応力として考慮されることがあります。</p>
+
+    <h2>資金繰り表作成の意義</h2>
+    <p>資金繰り表は、単に金融機関への提出資料としてだけでなく、経営者自身が事業の健全な運営のために活用すべきツールです。将来の資金の動きを把握することで、計画的な資金調達や、無駄な経費の削減、あるいは設備投資のタイミングなどを検討する際の、貴重な判断材料となり得ます。</p>
+    <p>詳しくは専門家へのご相談をおすすめします。</p>
+        <!-- ★★★ 本文ここまで ★★★ -->
+
+    <!-- 記事下CTA -->
+    <div class="article-cta">
+      <div class="article-cta-ttl">現状の融資可能性を、まず診断する。</div>
+      <div class="article-cta-desc">AI診断は無料・約1分。建設業の資金調達に関する課題を入力するだけで、最適なアプローチを即時分析します。</div>
+      <div class="article-cta-btns">
+        <a href="../diagnosis.html" class="btn-g">⚡ 無料AI診断を受ける</a>
+        <a href="https://demoscoring-sys.nexccess.com/" target="_blank" rel="noopener" class="btn-w">📊 銀行格付シミュレーション</a>
+      </div>
+    </div>
+
+  </article>
+
+  <!-- ══ サイドバー ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-ttl">無料診断・シミュレーション</div>
+      <a href="../diagnosis.html" class="sidebar-cta">⚡ 無料AI診断（約1分）</a>
+      <a href="https://demoscoring-sys.nexccess.com/" target="_blank" rel="noopener" class="sidebar-cta secondary">📊 銀行格付シミュレーション</a>
+      <div class="sidebar-note">診断後の相談・勧誘は一切ありません</div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-ttl">関連コラム</div>
+      <ul class="related-list">
+        <li><a href="hitori-oyakata-yushi.html">一人親方が保証協会融資を受けるための3つの条件</a></li>
+        <li><a href="shinsa-ochita.html">保証協会の審査に落ちた本当の理由</a></li>
+        <li><a href="index.html">コラム一覧を見る</a></li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+
+<footer>
+  <div class="ft-name">Nexcess</div>
+  <div class="ft-copy">© 2026 合同会社 Nexcess. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

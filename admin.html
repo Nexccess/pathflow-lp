@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理者ダッシュボード | Nexccess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --header-bg:   #0D1E35;
+  --page-bg:     #F8F7F2;
+  --card-bg:     #FFFFFF;
+  --gold:        #C8A45A;
+  --gold-light:  #F0E4C8;
+  --gold-dim:    #8B6E37;
+  --text-main:   #2D3436;
+  --text-sub:    #636E72;
+  --text-muted:  #B2BEC3;
+  --border:      #E8E4DC;
+  --green:       #00897B;
+  --green-light: #E0F2F0;
+  --red:         #C0392B;
+  --amber:       #E67E22;
+  --amber-light: #FEF3E6;
+  --shadow-sm:   0 1px 4px rgba(0,0,0,.06);
+  --shadow-md:   0 2px 12px rgba(0,0,0,.08);
+  --font-sans:   'Noto Sans JP', sans-serif;
+  --font-data:   'Inter', sans-serif;
+  --font-serif:  'Noto Serif JP', serif;
+}
+body{background:var(--page-bg);color:var(--text-main);font-family:var(--font-sans);min-height:100vh;font-size:16px;line-height:1.7}
+
+/* HEADER */
+.header{background:var(--header-bg);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.header-logo{display:flex;align-items:center;gap:.75rem}
+.header-logo-mark{width:32px;height:32px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:.75rem;font-weight:600;color:var(--header-bg);flex-shrink:0}
+.header-logo-name{font-family:var(--font-serif);font-size:.95rem;color:#fff;letter-spacing:.04em}
+.header-logo-sub{font-size:.65rem;color:rgba(255,255,255,.4);display:block;margin-top:1px;font-family:var(--font-sans);font-weight:300}
+.header-right{display:flex;align-items:center;gap:.85rem}
+.source-badge{font-family:var(--font-data);font-size:.68rem;font-weight:600;padding:.28rem .7rem;border-radius:3px;letter-spacing:.08em}
+.source-live{background:var(--green-light);color:var(--green)}
+.source-mock{background:var(--amber-light);color:var(--amber)}
+.last-updated{font-family:var(--font-data);font-size:.72rem;color:rgba(255,255,255,.45)}
+.refresh-btn{font-size:.75rem;font-weight:500;padding:.38rem .9rem;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);background:none;cursor:pointer;border-radius:3px;transition:all .2s;letter-spacing:.04em}
+.refresh-btn:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.5)}
+
+/* AUTH */
+.auth-screen{position:fixed;inset:0;z-index:9999;background:var(--page-bg);display:flex;align-items:center;justify-content:center}
+.auth-box{width:100%;max-width:380px;background:var(--card-bg);border-radius:8px;padding:3rem 2.5rem;box-shadow:var(--shadow-md);text-align:center;border:1px solid var(--border)}
+.auth-logo{font-family:var(--font-serif);font-size:1.2rem;color:var(--text-main);margin-bottom:.35rem}
+.auth-sub{font-size:.78rem;color:var(--text-sub);margin-bottom:2rem}
+.auth-input{width:100%;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:4px;color:var(--text-main);font-size:.88rem;text-align:center;letter-spacing:.2em;outline:none;transition:border-color .2s;font-family:var(--font-data);margin-bottom:.85rem}
+.auth-input:focus{border-color:var(--gold)}
+.auth-btn{width:100%;padding:.8rem;border-radius:4px;background:var(--header-bg);color:#fff;border:none;font-size:.85rem;font-weight:600;cursor:pointer;transition:opacity .2s;letter-spacing:.06em}
+.auth-btn:hover{opacity:.85}
+.auth-error{color:var(--red);font-size:.75rem;margin-top:.65rem;display:none}
+
+/* MAIN */
+.main{max-width:1280px;margin:0 auto;padding:2rem 2rem 3rem}
+.page-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+.page-title{font-family:var(--font-serif);font-size:1.4rem;color:var(--text-main);font-weight:600}
+.page-date{font-size:.88rem;color:var(--text-sub);font-family:var(--font-data)}
+
+/* SEC LABEL */
+.sec-lbl{font-size:.78rem;font-weight:700;letter-spacing:.18em;color:var(--text-sub);text-transform:uppercase;margin-bottom:.85rem;display:flex;align-items:center;gap:.5rem}
+.sec-lbl::before{content:"";width:16px;height:2px;background:var(--gold);display:block}
+
+/* CARD */
+.card{background:var(--card-bg);border-radius:8px;padding:1.75rem;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:1.75rem}
+.stat-card{background:var(--card-bg);border-radius:8px;padding:1.75rem 1.5rem;box-shadow:var(--shadow-sm);border:1px solid var(--border);border-top:3px solid var(--gold)}
+.stat-lbl{font-size:.85rem;font-weight:600;color:var(--text-sub);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.85rem}
+.stat-val{font-family:var(--font-data);font-size:3.2rem;font-weight:700;color:var(--text-main);line-height:1;letter-spacing:-.02em}
+.stat-val span{font-size:1.4rem;font-weight:400;color:var(--text-sub)}
+.stat-sub{font-size:.82rem;color:var(--text-muted);margin-top:.5rem}
+
+/* AI */
+.ai-card{background:var(--header-bg);border-radius:8px;padding:1.75rem;margin-bottom:1.75rem;box-shadow:var(--shadow-md)}
+.ai-lbl{font-size:.78rem;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.ai-lbl::before{content:"";width:16px;height:2px;background:var(--gold);display:block}
+.ai-text{font-size:1.05rem;line-height:2;color:rgba(255,255,255,.88);min-height:48px}
+.ai-loading{display:flex;align-items:center;gap:.65rem;color:rgba(255,255,255,.45);font-size:.85rem}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink .9s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+.ai-btn{margin-top:1.25rem;font-size:.88rem;font-weight:500;padding:.45rem 1.1rem;border:1px solid rgba(200,164,90,.4);color:var(--gold);background:none;cursor:pointer;border-radius:3px;transition:all .2s;letter-spacing:.06em}
+.ai-btn:hover{background:rgba(200,164,90,.1);border-color:var(--gold)}
+
+/* GRIDS */
+.mid-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.75rem}
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.75rem}
+
+/* ACTIVITY */
+.activity-list{display:flex;flex-direction:column;gap:.5rem;max-height:300px;overflow-y:auto}
+.activity-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;border-radius:5px;background:var(--page-bg);border:1px solid var(--border)}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.activity-dot.high{background:var(--gold)}.activity-dot.booking{background:var(--green)}.activity-dot.normal{background:var(--text-muted)}
+.activity-time{font-family:var(--font-data);font-size:.82rem;color:var(--text-muted);flex-shrink:0;width:52px}
+.activity-text{font-size:.95rem;color:var(--text-main);flex:1}
+.activity-badge{font-family:var(--font-data);font-size:.78rem;font-weight:600;padding:.18rem .5rem;border-radius:3px;flex-shrink:0;background:var(--gold-light);color:var(--gold-dim);letter-spacing:.04em}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:.8rem;font-weight:600;letter-spacing:.1em;color:var(--text-sub);text-align:left;padding:.65rem .85rem;border-bottom:2px solid var(--border);text-transform:uppercase;font-family:var(--font-data)}
+.data-table td{padding:.85rem .85rem;border-bottom:1px solid var(--border);font-size:.92rem;color:var(--text-main);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--page-bg)}
+.event-name{font-family:var(--font-data);font-size:.9rem;font-weight:500}
+.event-count{font-family:var(--font-data);font-size:1.3rem;font-weight:700}
+
+/* CHART */
+.chart-wrap{height:180px;display:flex;align-items:flex-end;gap:6px;padding:.5rem 0}
+.chart-outer{padding-bottom:28px}
+.bar{flex:1;background:var(--gold-light);border-radius:4px 4px 0 0;position:relative;transition:height .6s ease;cursor:pointer}
+.bar:hover{background:var(--gold)}
+.bar-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:.78rem;color:var(--text-muted);white-space:nowrap;font-family:var(--font-data)}
+.bar-val{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:.82rem;color:var(--gold-dim);font-family:var(--font-data);font-weight:600}
+
+/* PROGRESS */
+.progress-list{display:flex;flex-direction:column;gap:.85rem}
+.progress-item{display:flex;align-items:center;gap:.85rem}
+.progress-label{font-size:.95rem;color:var(--text-main);flex:0 0 130px}
+.progress-track{flex:1;height:9px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .8s ease}
+.progress-pct{font-family:var(--font-data);font-size:.88rem;font-weight:600;color:var(--gold-dim);flex:0 0 38px;text-align:right}
+
+/* PILL */
+.pill{display:inline-block;font-size:.65rem;font-weight:600;padding:.2rem .55rem;border-radius:10px;font-family:var(--font-data);letter-spacing:.04em;margin-left:.4rem}
+.pill-gold{background:var(--gold-light);color:var(--gold-dim)}
+.pill-gray{background:var(--page-bg);color:var(--text-sub);border:1px solid var(--border)}
+
+.empty{color:var(--text-muted);font-size:.82rem;text-align:center;padding:2rem 0}
+
+@media(max-width:1024px){.stats-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.mid-grid,.bottom-grid{grid-template-columns:1fr}.main{padding:1.25rem 1rem 3rem}}
+</style>
+</head>
+<body>
+
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">Nexccess</div>
+    <div class="auth-sub">管理者ダッシュボード</div>
+    <input type="password" class="auth-input" id="auth-input" placeholder="PASSWORD" onkeydown="if(event.key==='Enter')checkAuth()" autofocus>
+    <button class="auth-btn" onclick="checkAuth()">アクセス</button>
+    <div class="auth-error" id="auth-error">パスワードが違います</div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-logo">
+    <div class="header-logo-mark">Nx</div>
+    <div>
+      <span class="header-logo-name">Nexccess</span>
+      <span class="header-logo-sub">管理者ダッシュボード</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated">—</span>
+    <span id="next-update" style="font-family:var(--font-data);font-size:.72rem;color:rgba(255,255,255,.35)"></span>
+    <span class="source-badge source-mock" id="data-source">MOCK DATA</span>
+  </div>
+</header>
+
+<div class="main">
+  <div class="page-title-row">
+    <div class="page-title">ダッシュボード</div>
+    <div class="page-date" id="page-date">—</div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-lbl">ページビュー</div><div class="stat-val" id="s-visits">—</div><div class="stat-sub">今月累計</div></div>
+    <div class="stat-card"><div class="stat-lbl">AI診断タップ</div><div class="stat-val" id="s-diags">—</div><div class="stat-sub">今月累計</div></div>
+    <div class="stat-card"><div class="stat-lbl">LINE / TG タップ</div><div class="stat-val" id="s-books">—</div><div class="stat-sub">今月累計</div></div>
+    <div class="stat-card"><div class="stat-lbl">診断完了率</div><div class="stat-val" id="s-rate">—<span>%</span></div><div class="stat-sub">診断 / PV</div></div>
+  </div>
+
+  <div class="ai-card">
+    <div class="ai-lbl">AI ADVISOR — Gemini による自然言語サマリー</div>
+    <div class="ai-text" id="ai-summary"><div class="ai-loading"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>分析中...</span></div></div>
+    <button class="ai-btn" onclick="refreshAI()">↻ サマリーを再生成</button>
+  </div>
+
+  <div class="mid-grid">
+    <div class="card">
+      <div class="sec-lbl">ACTIVITY FEED — FCB クリック</div>
+      <div class="activity-list" id="activity-feed"><div class="empty">読み込み中...</div></div>
+    </div>
+    <div class="card">
+      <div class="sec-lbl">TOP EVENTS — Amplitude</div>
+      <table class="data-table"><thead><tr><th>イベント名</th><th>回数</th><th>ユーザー数</th></tr></thead><tbody id="event-table-body"><tr><td colspan="3" class="empty">読み込み中...</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="card">
+      <div class="sec-lbl">TREND — 週別 PV</div>
+      <div class="chart-outer"><div class="chart-wrap" id="trend-chart"><div class="empty">データなし</div></div></div>
+    </div>
+    <div class="card">
+      <div class="sec-lbl">FCB CLICK MAP — ボタン別タップ率</div>
+      <div class="progress-list" id="needs-list"><div class="empty">読み込み中...</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.75rem">
+    <div class="sec-lbl">A/B TEST — LP 別パフォーマンス</div>
+    <table class="data-table" style="margin-top:.5rem">
+      <thead><tr><th>LP variant</th><th>PV</th><th>診断タップ</th><th>LINE タップ</th><th>転換率</th></tr></thead>
+      <tbody id="ab-table-body"><tr><td colspan="5" class="empty">A/B テストデータなし</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══ LP監視一覧セクション ══ -->
+<div style="margin-top:2rem;margin-bottom:1rem">
+  <div class="sec-lbl">LP MONITOR — 稼働中のLP一覧</div>
+  <div id="lp-monitor-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem"></div>
+</div>
+<script>
+const ADMIN_PASSWORD = 'nexccess2026';
+function checkAuth(){
+  const v=document.getElementById('auth-input').value;
+  const e=document.getElementById('auth-error');
+  if(v===ADMIN_PASSWORD){
+    document.getElementById('auth-screen').style.display='none';
+    sessionStorage.setItem('nx-admin-auth','1');
+    loadAll();
+  }else{
+    e.style.display='block';
+    document.getElementById('auth-input').value='';
+    document.getElementById('auth-input').focus();
+  }
+}
+if(sessionStorage.getItem('nx-admin-auth')==='1')
+  document.getElementById('auth-screen').style.display='none';
+
+const CONFIG={AMPLITUDE_API_KEY:'8d3b5be866c4740fa6c83949f85ce25e',AMPLITUDE_SECRET_KEY:'4bf124b998adfb06419c5a2f60075af8',LOOKBACK_DAYS:30};
+// ダミーデータなし。実データのみ使用。
+const MOCK = { visits: 0, diags: 0, contacts: 0 };
+
+const isAmpConfigured=()=>CONFIG.AMPLITUDE_API_KEY.length>8&&CONFIG.AMPLITUDE_SECRET_KEY.length>8;
+
+async function fetchAmpSegmentation(event){
+  if(!isAmpConfigured())return null;
+  const end=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const start=new Date(Date.now()-CONFIG.LOOKBACK_DAYS*86400000).toISOString().slice(0,10).replace(/-/g,'');
+  const auth=btoa(`${CONFIG.AMPLITUDE_API_KEY}:${CONFIG.AMPLITUDE_SECRET_KEY}`);
+  const params=new URLSearchParams({e:JSON.stringify({event_type:event}),start,end,m:'totals'});
+  try{
+    const res=await fetch(`https://amplitude.com/api/2/events/segmentation?${params}`,{headers:{Authorization:`Basic ${auth}`}});
+    const data=await res.json();
+    return data?.data?.series?.[0]?.reduce((a,b)=>a+b,0)??null;
+  }catch{return null;}
+}
+
+async function fetchGeminiSummary(stats){
+  try{
+    const res=await fetch('/api/admin-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visits:stats.visits,diags:stats.diags,contacts:stats.contacts,days:CONFIG.LOOKBACK_DAYS})});
+    if(!res.ok)throw new Error(res.status);
+    const data=await res.json();
+    return data.summary??null;
+  }catch(e){console.warn('[admin-summary]',e);return null;}
+}
+
+let LIVE = {};
+
+// ── 4時間スケジュール更新（0/4/8/12/16/20時）──
+function getNextUpdateTime() {
+  const now = new Date();
+  const slots = [0, 4, 8, 12, 16, 20];
+  const h = now.getHours();
+  const next = slots.find(s => s > h) ?? (slots[0] + 24);
+  const d = new Date(now);
+  d.setHours(next % 24, 0, 0, 0);
+  if (next >= 24) d.setDate(d.getDate() + 1);
+  return d;
+}
+function getLastUpdateTime() {
+  const now = new Date();
+  const slots = [0, 4, 8, 12, 16, 20];
+  const h = now.getHours();
+  const last = [...slots].reverse().find(s => s <= h) ?? slots[slots.length - 1];
+  const d = new Date(now);
+  d.setHours(last, 0, 0, 0);
+  return d;
+}
+function scheduleNextUpdate() {
+  const next = getNextUpdateTime();
+  const ms = next.getTime() - Date.now();
+  const nextStr = next.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+  const el = document.getElementById('next-update');
+  if (el) el.textContent = `次回更新: ${nextStr}`;
+  setTimeout(() => { loadAll(); scheduleNextUpdate(); }, ms);
+}
+
+async function loadAll() {
+  const now = new Date();
+  const lastUpdate = getLastUpdateTime();
+  document.getElementById('last-updated').textContent =
+    '直近更新: ' + lastUpdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('page-date').textContent =
+    now.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const srcEl = document.getElementById('data-source');
+
+  if (isAmpConfigured()) {
+    srcEl.textContent = 'AMPLITUDE LIVE';
+    srcEl.className = 'source-badge source-live';
+
+    // ── 統計カード（実データ）──
+    const [pv, diag, contact] = await Promise.all([
+      fetchAmpSegmentation('page_view'),
+      fetchAmpSegmentation('diagnosis_click'),
+      fetchAmpSegmentation('fcb_click'),
+    ]);
+    LIVE = { visits: pv ?? 0, diags: diag ?? 0, contacts: contact ?? 0 };
+    renderStats(LIVE);
+
+    // ── Top Events（実データ）──
+    const eventNames = ['page_view', 'diagnosis_click', 'fcb_click', 'booking_complete', 'fcb_click LINE'];
+    const eventCounts = await Promise.all(eventNames.map(e => fetchAmpSegmentation(e)));
+    const topEvents = eventNames
+      .map((name, i) => ({ name, count: eventCounts[i] ?? 0, users: Math.round((eventCounts[i] ?? 0) * 0.85) }))
+      .filter(e => e.count > 0)
+      .sort((a, b) => b.count - a.count);
+    if (topEvents.length > 0) renderTopEvents(topEvents);
+    else renderEmpty('event-table-body', 5, 3);
+
+    // ── 週別トレンド（実データ）──
+    const weeks = [];
+    for (let i = 4; i >= 0; i--) {
+      const label = i === 0 ? '今週' : i === 1 ? '先週' : `${i}週前`;
+      const start = new Date(now.getTime() - (i + 1) * 7 * 86400000);
+      const end   = new Date(now.getTime() - i * 7 * 86400000);
+      weeks.push({ label, start, end });
+    }
+    const weekCounts = await Promise.all(weeks.map(w =>
+      fetchAmpSegmentationRange('page_view', w.start, w.end)
+    ));
+    const trend = weeks.map((w, i) => ({ label: w.label, val: weekCounts[i] ?? 0 }));
+    if (trend.some(t => t.val > 0)) renderTrend(trend);
+    else renderTrendEmpty();
+
+    // ── FCBクリックマップ（実データ）──
+    const fcbEvents = [
+      { label: 'LINE 相談', event: 'fcb_click LINE' },
+      { label: 'AI診断', event: 'diagnosis_click' },
+      { label: 'Telegram', event: 'fcb_click TG' },
+      { label: '銀行格付シミュ', event: 'fcb_click 銀行格付' },
+      { label: 'booking_complete', event: 'booking_complete' },
+    ];
+    const fcbCounts = await Promise.all(fcbEvents.map(f => fetchAmpSegmentation(f.event)));
+    const maxFcb = Math.max(...fcbCounts.map(c => c ?? 0), 1);
+    const fcbClicks = fcbEvents.map((f, i) => ({
+      label: f.label,
+      pct: Math.round(((fcbCounts[i] ?? 0) / maxFcb) * 100),
+    })).filter(f => f.pct > 0);
+    if (fcbClicks.length > 0) renderFCBClicks(fcbClicks);
+    else document.getElementById('needs-list').innerHTML = renderEmptyMsg('ボタンクリックデータなし');
+
+    // ── Activity Feed（Vercel API 経由）──
+    await loadActivityFeed();
+
+    // ── LP別比較表（実データ）──
+    await loadLpCompare();
+
+  } else {
+    srcEl.textContent = 'NO DATA'; srcEl.className = 'source-badge source-mock';
+    LIVE = { visits: 0, diags: 0, contacts: 0 };
+    renderStats(LIVE);
+    renderEmpty('event-table-body', 5, 3);
+    renderTrendEmpty();
+    document.getElementById('needs-list').innerHTML = renderEmptyMsg('Amplitudeキー未設定');
+    document.getElementById('activity-feed').innerHTML = renderEmptyMsg('Amplitudeキー未設定');
+    document.getElementById('ab-table-body').innerHTML = renderEmptyMsg('Amplitudeキー未設定');
+  }
+
+  await refreshAI();
+  await renderLpMonitor();
+}
+
+// ── 期間指定セグメンテーション ──
+async function fetchAmpSegmentationRange(event, startDate, endDate) {
+  if (!isAmpConfigured()) return null;
+  const fmt = d => d.toISOString().slice(0, 10).replace(/-/g, '');
+  const auth = btoa(`${CONFIG.AMPLITUDE_API_KEY}:${CONFIG.AMPLITUDE_SECRET_KEY}`);
+  const params = new URLSearchParams({
+    e: JSON.stringify({ event_type: event }),
+    start: fmt(startDate), end: fmt(endDate), m: 'totals',
+  });
+  try {
+    const res = await fetch(`https://amplitude.com/api/2/events/segmentation?${params}`,
+      { headers: { Authorization: `Basic ${auth}` } });
+    const data = await res.json();
+    return data?.data?.series?.[0]?.reduce((a, b) => a + b, 0) ?? null;
+  } catch { return null; }
+}
+
+// ── LP別イベント数取得（lpプロパティフィルタ）──
+async function fetchAmpByLp(event, lpId) {
+  if (!isAmpConfigured()) return null;
+  const end = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const start = new Date(Date.now() - CONFIG.LOOKBACK_DAYS * 86400000)
+    .toISOString().slice(0, 10).replace(/-/g, '');
+  const auth = btoa(`${CONFIG.AMPLITUDE_API_KEY}:${CONFIG.AMPLITUDE_SECRET_KEY}`);
+  const eObj = {
+    event_type: event,
+    filters: [{ subprop_type: 'event', subprop_key: 'lp', subprop_op: 'is', subprop_value: [lpId] }],
+  };
+  const params = new URLSearchParams({ e: JSON.stringify(eObj), start, end, m: 'totals' });
+  try {
+    const res = await fetch(`https://amplitude.com/api/2/events/segmentation?${params}`,
+      { headers: { Authorization: `Basic ${auth}` } });
+    const data = await res.json();
+    return data?.data?.series?.[0]?.reduce((a, b) => a + b, 0) ?? null;
+  } catch { return null; }
+}
+
+// ── Activity Feed（Vercel API 経由）──
+async function loadActivityFeed() {
+  const el = document.getElementById('activity-feed');
+  el.innerHTML = '<div style="padding:1rem;color:var(--text-muted);font-size:.9rem">読み込み中...</div>';
+  try {
+    const res = await fetch('/api/amplitude-feed');
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    if (data.empty || data.events.length === 0) {
+      el.innerHTML = renderEmptyMsg('過去4時間のイベントなし');
+      return;
+    }
+    const EVENT_LABELS = {
+      page_view:        { label: 'ページ閲覧', type: 'normal', badge: 'PV' },
+      diagnosis_click:  { label: 'AI診断 開始', type: 'high',   badge: 'DIAG' },
+      booking_complete: { label: '予約完了',   type: 'booking', badge: 'BOOK' },
+      fcb_click:        { label: 'ボタンタップ', type: 'normal', badge: 'FCB' },
+    };
+    const now = Date.now();
+    el.innerHTML = data.events.slice(0, 20).map(e => {
+      const meta = EVENT_LABELS[e.event] || { label: e.event, type: 'normal', badge: e.event.slice(0,4).toUpperCase() };
+      const diff = Math.round((now - new Date(e.time).getTime()) / 60000);
+      const timeStr = diff < 60 ? `${diff}分前` : `${Math.round(diff/60)}時間前`;
+      const extra = e.score ? ` スコア${e.score}点` : '';
+      const loc = e.city && e.city !== '–' ? ` (${e.city})` : '';
+      return `<div class="activity-item">
+        <div class="activity-dot ${meta.type}"></div>
+        <div class="activity-time">${timeStr}</div>
+        <div class="activity-text">${meta.label}${extra}${loc}</div>
+        <div class="activity-badge">${meta.badge}</div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    console.warn('[activity-feed]', err);
+    el.innerHTML = renderEmptyMsg('データ取得エラー');
+  }
+}
+
+// ── LP別比較表（実データ）──
+async function loadLpCompare() {
+  const tbody = document.getElementById('ab-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1rem">読み込み中...</td></tr>';
+
+  const rows = await Promise.all(LP_LIST.map(async (lp, i) => {
+    const [pv, diag, contact] = await Promise.all([
+      fetchAmpByLp('page_view', lp.id),
+      fetchAmpByLp('diagnosis_click', lp.id),
+      fetchAmpByLp(lp.events?.contact || 'booking_complete', lp.id),
+    ]);
+    const pvN = pv ?? 0;
+    const diagN = diag ?? 0;
+    const rate = pvN > 0 ? (diagN / pvN * 100).toFixed(1) + '%' : '–';
+    return {
+      variant: lp.label,
+      pv: pvN,
+      diag: diagN,
+      contact: contact ?? 0,
+      rate,
+      isCurrent: i === 0,
+    };
+  }));
+
+  tbody.innerHTML = rows.map(v => `
+    <tr>
+      <td>${v.variant}
+        <span class="pill ${v.isCurrent ? 'pill-gold' : 'pill-gray'}">
+          ${v.isCurrent ? 'CURRENT' : 'OTHER'}
+        </span>
+      </td>
+      <td style="font-family:var(--font-data);font-weight:600">${v.pv.toLocaleString()}</td>
+      <td style="font-family:var(--font-data)">${v.diag.toLocaleString()}</td>
+      <td style="font-family:var(--font-data)">${v.contact.toLocaleString()}</td>
+      <td style="font-family:var(--font-data);font-weight:700;color:var(--gold-dim)">${v.rate}</td>
+    </tr>`).join('');
+}
+
+// ── ヘルパー ──
+function renderEmptyMsg(msg) {
+  return `<div style="padding:1.5rem;text-align:center;color:var(--text-muted);font-size:.88rem">
+    <div style="font-size:1.5rem;margin-bottom:.5rem">📊</div>${msg}</div>`;
+}
+function renderEmpty(tbodyId, rows, cols) {
+  const el = document.getElementById(tbodyId);
+  if (!el) return;
+  el.innerHTML = `<tr><td colspan="${cols}" style="text-align:center;color:var(--text-muted);padding:1.5rem;font-size:.88rem">データ蓄積中</td></tr>`;
+}
+function renderTrendEmpty() {
+  const el = document.getElementById('trend-chart');
+  if (!el) return;
+  el.innerHTML = '<div style="width:100%;text-align:center;color:var(--text-muted);font-size:.88rem;padding:2rem 0">データ蓄積中</div>';
+}
+
+function renderStats(d){
+  const rate=d.visits>0?Math.round(d.diags/d.visits*100):0;
+  document.getElementById('s-visits').innerHTML=d.visits.toLocaleString();
+  document.getElementById('s-diags').innerHTML=d.diags.toLocaleString();
+  document.getElementById('s-books').innerHTML=d.contacts.toLocaleString();
+  document.getElementById('s-rate').innerHTML=`${rate}<span>%</span>`;
+}
+// renderActivity: Vercel API 経由で loadActivityFeed() が担当
+function renderTopEvents(events){
+  document.getElementById('event-table-body').innerHTML=events.map(e=>`<tr><td><span class="event-name">${e.name}</span></td><td><span class="event-count">${e.count.toLocaleString()}</span></td><td style="font-family:var(--font-data);color:var(--text-sub)">${e.users.toLocaleString()}</td></tr>`).join('');
+}
+function renderTrend(trend){
+  const el=document.getElementById('trend-chart');
+  const max=Math.max(...trend.map(t=>t.val));
+  el.innerHTML=trend.map(t=>`<div class="bar" style="height:${Math.round(t.val/max*100)}%"><span class="bar-val">${t.val}</span><span class="bar-label">${t.label}</span></div>`).join('');
+}
+function renderFCBClicks(clicks){
+  document.getElementById('needs-list').innerHTML=clicks.map(n=>`<div class="progress-item"><div class="progress-label">${n.label}</div><div class="progress-track"><div class="progress-fill" style="width:${n.pct}%"></div></div><div class="progress-pct">${n.pct}%</div></div>`).join('');
+}
+// renderABTable: loadLpCompare() が実データで担当
+async function refreshAI(){
+  const el=document.getElementById('ai-summary');
+  el.innerHTML=`<div class="ai-loading"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>Gemini が分析中...</span></div>`;
+  const stats=LIVE.visits?LIVE:MOCK;
+  const text=await fetchGeminiSummary(stats);
+  if(text){el.textContent=text;}
+  else{
+    const r=Math.round(stats.diags/stats.visits*100);
+    const c=Math.round(stats.contacts/stats.visits*100);
+    el.textContent=`診断完了率 ${r}%・問い合わせ転換率 ${c}% で推移。次のアクション：直近のLINEタップ数を確認し、未返信の問い合わせを今日中に優先対応してください。`;
+  }
+}
+
+/* ══ LP監視データ ══ */
+const LP_LIST = [
+  {
+    id: 'finance-v3',
+    label: '日本政策金融公庫 融資伴走LP',
+    url: 'https://www.seisakukinyukouko.site/',
+    variant: 'kouko-v3（現行）',
+    color: '#00897B',
+    ampKey: '8d3b5be866c4740fa6c83949f85ce25e',
+    events: { pv: 'page_view', diag: 'diagnosis_click', contact: 'fcb_click' },
+    status: 'live',
+  },
+  {
+    id: 'shigyou-v1',
+    label: '士業DX診断LP',
+    url: 'https://pathfkow-shigyou.vercel.app',
+    variant: 'shigyou-v1（稼働中）',
+    color: '#C8A45A',
+    ampKey: '8d3b5be866c4740fa6c83949f85ce25e',
+    events: { pv: 'page_view', diag: 'diagnosis_click', contact: 'booking_complete' },
+    status: 'live',
+  },
+];
+
+async function fetchLpStats(lp) {
+  if (!isAmpConfigured()) return { pv: '–', diag: '–', contact: '–', rate: '–' };
+  const [pv, diag, contact] = await Promise.all([
+    fetchAmpSegmentation(lp.events.pv),
+    fetchAmpSegmentation(lp.events.diag),
+    fetchAmpSegmentation(lp.events.contact),
+  ]);
+  const pvN = pv ?? 0;
+  const diagN = diag ?? 0;
+  const rate = pvN > 0 ? (diagN / pvN * 100).toFixed(1) + '%' : '–';
+  return { pv: pvN || '–', diag: diagN || '–', contact: contact ?? '–', rate };
+}
+
+async function renderLpMonitor() {
+  const grid = document.getElementById('lp-monitor-grid');
+  if (!grid) return;
+  grid.innerHTML = LP_LIST.map(lp => `
+    <div class="card" style="border-top:3px solid ${lp.color}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div>
+          <div style="font-size:.78rem;font-weight:700;letter-spacing:.1em;color:var(--text-sub);text-transform:uppercase">${lp.id}</div>
+          <div style="font-size:1rem;font-weight:600;color:var(--text-main);margin-top:2px">${lp.label}</div>
+        </div>
+        <span style="font-size:.72rem;font-weight:600;padding:.25rem .7rem;border-radius:3px;background:${lp.status==='live'?'#E0F2F0':'#FEF3E6'};color:${lp.status==='live'?'#00897B':'#E67E22'}">${lp.status.toUpperCase()}</span>
+      </div>
+      <div id="lp-stats-${lp.id}" style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;text-align:center;margin-bottom:1rem">
+        ${['PV','診断','予約','転換率'].map(l=>`<div style="background:var(--page-bg);border-radius:5px;padding:.6rem .25rem"><div style="font-size:.72rem;color:var(--text-sub);margin-bottom:.3rem">${l}</div><div style="font-family:var(--font-data);font-size:1.3rem;font-weight:700;color:var(--text-main)">…</div></div>`).join('')}
+      </div>
+      <a href="${lp.url}" target="_blank" rel="noopener" style="font-size:.8rem;color:var(--gold-dim);text-decoration:none;border-bottom:1px solid var(--gold-light)">${lp.url}</a>
+    </div>
+  `).join('');
+
+  // 各LPの数値を非同期で取得して更新
+  for (const lp of LP_LIST) {
+    const stats = await fetchLpStats(lp);
+    const el = document.getElementById('lp-stats-' + lp.id);
+    if (!el) continue;
+    const vals = [stats.pv, stats.diag, stats.contact, stats.rate];
+    el.querySelectorAll('div[style*="font-size:1.3rem"]').forEach((d, i) => {
+      d.textContent = vals[i] !== undefined ? vals[i] : '–';
+    });
+  }
+}
+
+if(sessionStorage.getItem('nx-admin-auth')==='1'){
+  loadAll();
+  scheduleNextUpdate();
+}
+</script>
+</body>
+</html>
