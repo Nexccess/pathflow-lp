@@ -1,90 +1,52 @@
-'use strict';
+// api/book.js  – v3.1準拠
+// 終日イベント・attendees削除・colorId:6
+import { google } from 'googleapis';
 
-const { google } = require('googleapis');
-const { JWT } = require('google-auth-library');
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-function getAuthClient() {
-  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
-  return new JWT({
-    email: credentials.client_email,
-    key: credentials.private_key,
-    scopes: [
-      'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/calendar',
-    ],
-  });
-}
-
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+  const { name, phone, email, date, date2, recommended_menu, score, level, answers, lp } = req.body;
+  if (!name || !date) return res.status(400).json({ error: 'name and date are required' });
 
   try {
-    const {
-      company          = '',
-      name             = '',
-      email            = '',
-      phone            = '',
-      position         = '',
-      preferred_date   = '',
-      preferred_time   = '',
-      message          = '',
-      diagnosis_score  = '',
-      diagnosis_grade  = '',
-    } = req.body;
+    const auth = new google.auth.GoogleAuth({
+      credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON),
+      scopes: ['https://www.googleapis.com/auth/calendar'],
+    });
+    const authClient = await auth.getClient();
+    const calendar = google.calendar({ version: 'v3', auth: authClient });
 
-    if (!name)           throw new Error('お名前は必須です');
-    if (!email)          throw new Error('メールアドレスは必須です');
-    if (!preferred_date) throw new Error('希望日は必須です');
-    if (!preferred_time) throw new Error('希望時間は必須です');
+    // 終日イベント（v3.1仕様: dateTimeではなくdate形式）
+    const eventDate = date; // yyyy-mm-dd
 
-    const calendarId = process.env.CALENDAR_ID;
-    if (!calendarId) throw new Error('CALENDAR_ID が未設定です');
+    const description = [
+      `LP: ${lp || 'pathflow-v1'}`,
+      `お名前: ${name}`,
+      `携帯: ${phone || '-'}`,
+      `メール: ${email || '-'}`,
+      `希望時間帯: （担当者がLINEで確定）`,
+      `希望日（第2）: ${date2 || '-'}`,
+      `おすすめメニュー: ${recommended_menu || '-'}`,
+      `スコア: ${score} / レベル: ${level}`,
+      `診断回答: ${Array.isArray(answers) ? answers.join(' / ') : (answers || '-')}`,
+    ].join('\n');
 
-    const auth     = getAuthClient();
-    const calendar = google.calendar({ version: 'v3', auth });
-
-    // ISO datetime を組み立て（JST）
-    const datetimeStr = `${preferred_date}T${preferred_time}:00+09:00`;
-    const startDt = new Date(datetimeStr);
-    if (isNaN(startDt.getTime())) throw new Error('日時の形式が不正です');
-    const endDt = new Date(startDt.getTime() + 60 * 60 * 1000); // 1時間
-
-    const event = {
-      summary: `【相談予約】${company ? company + ' ' : ''}${name}`,
-      description: [
-        `会社名: ${company}`,
-        `氏名: ${name}`,
-        `メール: ${email}`,
-        `電話: ${phone}`,
-        `役職: ${position}`,
-        `診断スコア: ${diagnosis_score}点 (${diagnosis_grade}ランク)`,
-        message ? `メッセージ: ${message}` : '',
-      ].filter(Boolean).join('\n'),
-      start: { dateTime: startDt.toISOString(), timeZone: 'Asia/Tokyo' },
-      end:   { dateTime: endDt.toISOString(),   timeZone: 'Asia/Tokyo' },
-    };
-
-    const response = await calendar.events.insert({
-      calendarId,
-      requestBody: event,
+    await calendar.events.insert({
+      calendarId: process.env.CALENDAR_ID,
+      // attendees・sendUpdates は意図的に省略（v3.1 §5-3: GaxiosError回避）
+      requestBody: {
+        summary: `【仮予約】${name} 様`,
+        description,
+        colorId: '6', // タンジェリン（仮予約を視覚的に識別）
+        start: { date: eventDate },
+        end:   { date: eventDate },
+      },
     });
 
-    const bookingId = `BK-${Date.now()}`;
+    return res.status(200).json({ ok: true });
 
-    return res.status(200).json({
-      success:    true,
-      booking_id: bookingId,
-      eventId:    response.data.id,
-      eventLink:  response.data.htmlLink,
-    });
-
-  } catch (error) {
-    console.error('[book] Error:', error);
-    return res.status(500).json({ error: error.message });
+  } catch (err) {
+    console.error('book.js error:', err);
+    return res.status(500).json({ error: err.message });
   }
-};
+}
