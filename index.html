@@ -1,12 +1,9 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <title>Path-Flow | 寝ている間も、AIが営業する。</title>
-<!-- EmailJS v3.1 -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>emailjs.init('s45-Ce7lRsbQtqlNt');</script>
 <!-- Amplitude -->
 <script src="https://cdn.amplitude.com/libs/analytics-browser-2.3.1-min.js.gz"></script>
 <script>
@@ -627,8 +624,6 @@ footer{background:var(--navy-dark);padding:40px 16px;}
 ═══════════════════════════════════════ -->
 <script>
 /* ── v3.1定数 ──────────────────────────── */
-const EMAILJS_SERVICE_ID  = 'service_xh3oajd';
-const EMAILJS_TEMPLATE_ID = 'template_y7x76sf';
 const LINE_URL_CONST      = 'https://lin.ee/NVLxcX1';
 const NOTIFY_EMAIL_CONST  = 'info@nexccess.com';
 
@@ -864,25 +859,9 @@ function submitBooking() {
   var answersArr = _answers.map(function(a){return a?a.text:'';} );
   var now = new Date().toLocaleString('ja-JP',{timeZone:'Asia/Tokyo'});
 
-  /* ── 1. EmailJS送信（フロントエンド） ── */
-  var emailParams = {
-    to_email:           NOTIFY_EMAIL_CONST,
-    name:               name,
-    phone:              phone,
-    email:              email,
-    date:               date.replace(/-/g,'/') + ' ' + time,
-    date2:              date2 ? date2.replace(/-/g,'/')+'（第2希望）' : '-',
-    recommended_menu:   result.recommended_menu||'-',
-    score:              result.score||0,
-    level:              result.level||'-',
-    answers:            answersArr.join(' / '),
-    lp:                 LP_ID,
-    sent_at:            now,
-  };
-  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, emailParams)
-    .catch(function(e){console.error('EmailJS error:',e);});
+  /* メール通知はサーバー側Resend（save-shigyou.js）で処理 */
 
-  /* ── 2. /api/save-shigyou（SS書込み＋Calendar） ── */
+  /* ── /api/save-shigyou（SS書込み＋Calendar＋Resend通知） ── */
   fetch('/api/save-shigyou', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
