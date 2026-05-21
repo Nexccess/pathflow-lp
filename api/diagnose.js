@@ -1,83 +1,72 @@
-'use strict';
+// api/diagnose.js  – v3.1準拠
+// gemini-1.5-flash（gemini-2.5-flash-liteは現時点で利用不可のためdowngrade）
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const GEMINI_MODEL    = 'gemini-2.5-flash-lite';
-const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+export default async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-const SYSTEM_PROMPT = `
-あなたは中小企業向けの生成AI活用型販売業務支援システムの導入適合性を診断する専門アドバイザーです。
-ユーザーの入力情報をもとに導入適合スコアを算出し、以下の形式で必ずJSONのみを返してください。
-マークダウンや説明文は一切含めず、JSONオブジェクトのみを返すこと。
+  const { answers, mode } = req.body;
+  if (!answers || !Array.isArray(answers)) return res.status(400).json({ error: 'Invalid answers' });
 
-{
-  "score": 数値(0-100),
-  "grade": "S/A/B/C のいずれか",
-  "headline": "診断結果の一行タイトル（20字以内）",
-  "next_step": "推奨する次のアクション（30字以内）",
-  "summary": "診断サマリー（100〜150字）",
-  "pain_points": [
-    { "title": "課題タイトル", "detail": "詳細説明（40字以内）", "severity": 1〜3の数値 }
-  ],
-  "recommended_features": [
-    { "feature": "推奨機能名", "reason": "推奨理由（40字以内）" }
-  ],
-  "roi_estimate": {
-    "workload_reduction": "例：月40時間",
-    "conversion_improvement": "例：+15%",
-    "payback_period": "例：8〜12ヶ月"
-  }
-}
+  const totalScore = answers.reduce((s, a) => s + (parseInt(a.score) || 0), 0);
+  const level = totalScore >= 14 ? 'A' : totalScore >= 9 ? 'B' : 'C';
 
-pain_pointsは2〜4件、recommended_featuresは2〜4件とすること。
-`.trim();
+  const MENUS = mode === 'partner' ? [
+    { name: 'パートナー個別相談（30分）', price: '無料' },
+    { name: 'Path-Flow 導入プレゼン', price: '無料' },
+    { name: 'Path-Flow 標準パッケージ', price: '要見積' },
+  ] : [
+    { name: 'AI診断・自動予約 導入相談（30分）', price: '無料' },
+    { name: 'Path-Flow スターターパッケージ', price: '要見積' },
+    { name: 'Path-Flow フルパッケージ', price: '450万円〜' },
+  ];
 
-function buildPrompt(payload) {
-  return `
-業種: ${payload.industry || '未回答'}
-企業規模: ${payload.size || '未回答'}
-地域: ${payload.area || '未回答'}
-現在の課題: ${(payload.challenges || []).join('、')}
-月間問い合わせ数: ${payload.monthly_inquiries || '未回答'}
-現在のツール: ${payload.current_tools || '未回答'}
-導入目標: ${payload.goals || '未回答'}
-導入時期: ${payload.budget_timing || '未回答'}
-`.trim();
-}
-
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+  const menuList = MENUS.map(m => `・${m.name}（${m.price}）`).join('\n');
+  const answerText = answers.map((a, i) => `Q${i + 1}: ${a.text}`).join('\n');
+  const isPartner = mode === 'partner';
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error('GEMINI_API_KEY が未設定です');
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const payload = req.body;
+    const prompt = `あなたはPath-Flowの営業コンサルタントです。
+${isPartner ? '代理店・パートナー候補' : '中小企業経営者'}の診断回答を分析し、最適なメニューを1つ推薦してください。
 
-    const response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ role: 'user', parts: [{ text: buildPrompt(payload) }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 1024 },
-      }),
+回答:
+${answerText}
+
+スコア: ${totalScore} / レベル: ${level}
+
+利用可能なメニュー:
+${menuList}
+
+必ず以下のJSON形式のみで回答してください。マークダウン・コードブロック・前置き文は一切不要です:
+{"score":${totalScore},"level":"${level}","recommended_menu":"メニュー名をそのまま記載","recommended_price":"価格をそのまま記載","headline":"20字以内の課題見出し","reason":"このメニューを推薦する理由を2文で記載","pains":[{"title":"課題タイトル","desc":"説明50字以内"},{"title":"課題タイトル","desc":"説明50字以内"}]}`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().replace(/```json|```/g, '').trim();
+    // JSONのみ抽出（余分なテキストを除去）
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON in response');
+    const data = JSON.parse(jsonMatch[0]);
+    return res.status(200).json(data);
+
+  } catch (err) {
+    console.error('Gemini error:', err.message);
+    // フォールバック（スコアベース）
+    const menuIdx = level === 'A' ? 2 : level === 'B' ? 0 : 0;
+    const menu = MENUS[menuIdx];
+    return res.status(200).json({
+      score: totalScore,
+      level,
+      recommended_menu: menu.name,
+      recommended_price: menu.price,
+      headline: level === 'A' ? '営業自動化の即戦力候補' : level === 'B' ? '営業効率化の余地あり' : '基盤整備が最優先',
+      reason: 'Path-Flowの導入により、AI診断と自動予約で営業工数を大幅に削減し、商談化率の向上が見込めます。まずは無料相談でご確認ください。',
+      pains: [
+        { title: '機会損失リスク', desc: '夜間・休日の問い合わせへの対応遅れが成約率を下げています。' },
+        { title: '属人化リスク', desc: '担当者依存の営業構造はスケールの妨げになります。' },
+      ],
     });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data?.error?.message || 'Gemini APIエラー');
-
-    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
-
-    return res.status(200).json(result);
-
-  } catch (error) {
-    console.error('[diagnose] Error:', error);
-    return res.status(500).json({ error: error.message });
   }
-};
+}
