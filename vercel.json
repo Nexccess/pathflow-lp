@@ -1,7 +1,12 @@
 {
+  "version": 2,
   "functions": {
-    "api/*.js": {
-      "maxDuration": 30
-    }
-  }
+    "api/diagnose.js":       { "runtime": "nodejs18.x" },
+    "api/save-shigyou.js":   { "runtime": "nodejs18.x" },
+    "api/amplitude-feed.js": { "runtime": "nodejs18.x" }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)",     "dest": "/$1" }
+  ]
 }
