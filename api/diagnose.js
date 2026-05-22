@@ -1,7 +1,8 @@
-// api/diagnose.js
+// api/diagnose.js  v2
 // ─────────────────────────────────────────────
-// 役割: Gemini API（gemini-2.5-flash-lite）による
-//       5問診断結果の分析・メニュー提案
+// 役割: Gemini APIによる5問診断結果の分析・メニュー提案
+// 変更: 503対策として gemini-2.5-flash-lite → gemini-1.5-flash
+//       へのオートフォールバック + リトライ(1回)を追加
 // ─────────────────────────────────────────────
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -15,13 +16,53 @@ const MENU_LIST = `
 - IT補助金活用プラン: 初期費用の最大3/4を補助（要件確認後ご案内）
 `;
 
-// ── パートナー適合スコア基準 ──────────────────
 const PARTNER_SCORE_GUIDE = `
 スコア基準（パートナー適合診断）:
 A (80-100): 即戦力パートナー。活動開始を強く推奨。
 B (60-79): 十分な適性あり。個別面談で活動プラン策定可能。
 C (40-59): 一定の適性あり。情報収集から始めることを推奨。
 `;
+
+// 優先モデル → フォールバックモデルの順で試行
+const MODEL_PRIORITY = [
+  'gemini-2.5-flash-lite',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b'
+];
+
+// ── モデル呼び出し（503/429時は次モデルへ）─────
+async function callGemini(apiKey, prompt) {
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  for (const modelName of MODEL_PRIORITY) {
+    try {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.4,
+          maxOutputTokens: 512
+        }
+      });
+      const result = await model.generateContent(prompt);
+      const text   = result.response.text();
+      const clean  = text.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+      console.log(`Gemini OK: model=${modelName}`);
+      return parsed;
+    } catch (e) {
+      const msg = e.message || '';
+      // 503 / 429 / RESOURCE_EXHAUSTED は次のモデルへ
+      const isRetryable = msg.includes('503') || msg.includes('429') ||
+                          msg.includes('high demand') || msg.includes('RESOURCE_EXHAUSTED') ||
+                          msg.includes('quota');
+      console.error(`Gemini error (model=${modelName}): ${msg}`);
+      if (!isRetryable) throw e;   // 致命的エラーはここで打ち切り
+      // retryable → 次モデルへ continue
+    }
+  }
+  throw new Error('All Gemini models unavailable');
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -37,19 +78,14 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     console.error('GEMINI_API_KEY is not set');
-    return res.status(500).json(buildFallback(mode));
+    return res.status(200).json(buildFallback(mode));
   }
 
   const isPartner = mode === 'partner';
 
-  // ── プロンプト構築 ──────────────────────────
   const systemContext = isPartner
-    ? `あなたはPath-Flowパートナープログラムの適合診断AIです。
-回答者のパートナーとしての適合スコア・強み・改善点を分析してください。
-${PARTNER_SCORE_GUIDE}`
-    : `あなたはPath-Flow（AI診断・予約自動化SaaS）の営業AIです。
-経営者の課題を分析し、最適なプランを提案してください。
-${MENU_LIST}`;
+    ? `あなたはPath-Flowパートナープログラムの適合診断AIです。回答者のパートナーとしての適合スコア・強み・改善点を分析してください。\n${PARTNER_SCORE_GUIDE}`
+    : `あなたはPath-Flow（AI診断・予約自動化SaaS）の営業AIです。経営者の課題を分析し、最適なプランを提案してください。\n${MENU_LIST}`;
 
   const answersText = answers.map((a, i) => `Q${i+1}: ${a}`).join('\n');
 
@@ -76,33 +112,15 @@ ${answersText}
   ]
 }`;
 
-  // ── Gemini API呼び出し ──────────────────────
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash-lite',   // 展開手順書§5-2 指定モデル
-      generationConfig: {
-        responseMimeType: 'application/json',
-        temperature: 0.4,
-        maxOutputTokens: 512
-      }
-    });
-
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-
-    // JSON安全パース
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-
+    const parsed = await callGemini(apiKey, prompt);
     return res.status(200).json(parsed);
   } catch (e) {
-    console.error('Gemini API error:', e.message);
+    console.error('All Gemini models failed:', e.message);
     return res.status(200).json(buildFallback(mode));
   }
 }
 
-// ── フォールバック（APIエラー時のルールベース結果）──
 function buildFallback(mode) {
   const isPartner = mode === 'partner';
   return {
@@ -112,7 +130,7 @@ function buildFallback(mode) {
     summary: isPartner
       ? 'あなたの経験・環境はPath-Flowパートナーとして十分な適性があります。個別面談でインセンティブ条件をご確認ください。'
       : 'Path-Flowの導入により、24時間AI対応と自動予約で商談機会の損失を防ぎ、営業工数を大幅に削減できます。',
-    recommended_menu: isPartner ? undefined : 'スタンダードプラン',
+    recommended_menu:  isPartner ? undefined : 'スタンダードプラン',
     recommended_price: isPartner ? undefined : '月額 ¥49,800',
     pains: [
       { title: '機会損失リスク', desc: '夜間・休日の問い合わせ対応遅れが成約率を下げています。' },
