@@ -1,8 +1,13 @@
 {
-  "name": "finance-nexcess",
+  "name": "pathflow-lp",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
-    "google-auth-library": "^9.0.0",
-    "googleapis": "^144.0.0"
+    "@google/generative-ai": "^0.21.0",
+    "googleapis": "^144.0.0",
+    "resend": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
   }
 }
