@@ -1,12 +1,23 @@
 {
-  "version": 2,
   "functions": {
-    "api/diagnose.js":       { "runtime": "nodejs18.x" },
-    "api/save-shigyou.js":   { "runtime": "nodejs18.x" },
-    "api/amplitude-feed.js": { "runtime": "nodejs18.x" }
+    "api/diagnose.js": {
+      "maxDuration": 30
+    },
+    "api/save-shigyou.js": {
+      "maxDuration": 30
+    },
+    "api/amplitude-feed.js": {
+      "maxDuration": 10
+    }
   },
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)",     "dest": "/$1" }
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
   ]
 }
