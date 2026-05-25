@@ -1,174 +1,159 @@
-// api/save-shigyou.js
-// ─────────────────────────────────────────────
-// 役割: スプレッドシート書込み + Googleカレンダー仮予約登録
-//       + Resendでオーナー通知メール送信（返信PASSなし）
-// ※ EmailJS（フロントエンド送信）は使用しない
-// ─────────────────────────────────────────────
-
+// api/save-shigyou.js  – v3.4準拠
+// Nodemailer + Gmail App Password
 import { google } from 'googleapis';
-import { Resend }  from 'resend';
+import nodemailer from 'nodemailer';
 
-const SHEET_NAME = 'AI診断結果'; // ← SSのシート名と完全一致させること
+const SHEET_NAME   = process.env.SHEET_NAME || 'AI診断結果';
+const NOTIFY_EMAIL = process.env.GMAIL_USER  || 'info.nexccess@gmail.com';
+
+const HEADERS = [
+  '送信日時','LP_ID','お名前','携帯電話','メールアドレス',
+  '希望日時（第1）','希望日時（第2）','おすすめメニュー',
+  'スコア','レベル','診断回答'
+];
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const {
-    name, phone, email, company,
-    date, time, date2,
+    name, phone, email,
+    date, time, date2, time2,
     recommended_menu, score, level,
-    answers, mode, lp
+    answers, lp
   } = req.body;
 
-  // ── 認証 ──────────────────────────────────────
-  let serviceAccount;
-  try {
-    serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
-  } catch (e) {
-    console.error('GOOGLE_SERVICE_ACCOUNT_JSON parse error:', e);
-    return res.status(500).json({ error: 'Invalid service account JSON' });
-  }
+  if (!name || !email) return res.status(400).json({ error: 'name and email required' });
 
-  const auth = new google.auth.GoogleAuth({
-    credentials: serviceAccount,
-    scopes: [
-      'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/calendar'
-    ]
-  });
-  const authClient = await auth.getClient();
+  // ⚠ answersは必ず文字列型で受け取る（v3.4 §5-1）
+  const answersStr = Array.isArray(answers)
+    ? answers.join(' / ')
+    : (typeof answers === 'string' ? answers : '');
+
+  // ⚠ dateはyyyy-mm-dd HH:MM形式・スラッシュ変換禁止（v3.4 §5-1）
+  const date1Str = date ? `${date}${time ? ' ' + time : ''}` : '';
+  const date2Str = date2 ? `${date2}${time2 ? ' ' + time2 : ''}` : '';
 
   const now = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-  const answersStr = Array.isArray(answers) ? answers.join(' / ') : (answers || '');
 
-  // ── スプレッドシート書込み ──────────────────────
-  const sheets = google.sheets({ version: 'v4', auth: authClient });
-  const spreadsheetId = process.env.SHIGYOU_SPREADSHEET_ID;
-
-  // ヘッダー行の確認（初回のみ自動挿入）
   try {
-    const checkRes = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: `${SHEET_NAME}!A1:K1`
+    const auth = new google.auth.GoogleAuth({
+      credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON),
+      scopes: [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/calendar',
+      ],
     });
-    const firstRow = (checkRes.data.values || [])[0] || [];
-    if (firstRow.length === 0) {
-      await sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range: `${SHEET_NAME}!A1`,
-        valueInputOption: 'RAW',
-        resource: {
-          values: [[
-            '送信日時', 'LP_ID', 'お名前', '携帯電話', 'メールアドレス',
-            '希望日時（第1）', '希望日時（第2）', 'おすすめメニュー',
-            'スコア', 'レベル', '診断回答'
-          ]]
-        }
+    const authClient = await auth.getClient();
+
+    // ── 1. Spreadsheet書込み ────────────────────────────────
+    const sheets   = google.sheets({ version: 'v4', auth: authClient });
+    const SHEET_ID = process.env.SHIGYOU_SPREADSHEET_ID;
+    const sheetName = SHEET_NAME;
+
+    // ヘッダー行チェック（初回のみ自動挿入）
+    const checkRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: `${sheetName}!A1`,
+    });
+    const firstCell = ((checkRes.data.values || [[]])[0] || [])[0];
+    if (!firstCell) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SHEET_ID,
+        range: `${sheetName}!A1`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [HEADERS] },
       });
     }
-  } catch (e) {
-    console.error('Header check error (non-fatal):', e.message);
-  }
 
-  // データ書込み
-  const dateFormatted = date ? date.replace(/-/g, '/') + (time ? ' ' + time : '') : '';
-  const date2Formatted = date2 ? date2.replace(/-/g, '/') : '';
-
-  try {
     await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: `${SHEET_NAME}!A1`,
-      valueInputOption: 'RAW',
-      resource: {
+      spreadsheetId: SHEET_ID,
+      range: `${sheetName}!A1`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
         values: [[
           now,
-          lp || '',
-          name || '',
+          lp || 'pathflow-v1',
+          name,
           phone || '',
-          email || '',
-          dateFormatted,
-          date2Formatted,
+          email,
+          date1Str,
+          date2Str,
           recommended_menu || '',
           score || '',
           level || '',
-          answersStr
-        ]]
-      }
+          answersStr,
+        ]],
+      },
     });
-  } catch (e) {
-    console.error('Sheets append error:', e.message);
-    // 書込み失敗でもCalendar・メールは続行
-  }
 
-  // ── Googleカレンダー仮予約（顧客モードのみ） ────
-  if (mode === 'customer' && date) {
-    const calendar = google.calendar({ version: 'v3', auth: authClient });
-    try {
+    // ── 2. Googleカレンダー登録（終日イベント）────────────────
+    if (date) {
+      const calendar = google.calendar({ version: 'v3', auth: authClient });
+      // ⚠ attendees・sendUpdates省略（GaxiosError回避 §5-3）
       await calendar.events.insert({
         calendarId: process.env.CALENDAR_ID,
-        resource: {
+        requestBody: {
           summary: `【仮予約】${name} 様`,
           description: [
-            `希望時間: ${time || '未指定'}`,
-            `メニュー: ${recommended_menu || '未定'}`,
-            `TEL: ${phone || ''}`,
-            `Email: ${email || ''}`,
-            `会社: ${company || ''}`,
+            `LP: ${lp || 'pathflow-v1'}`,
+            `お名前: ${name}`,
+            `携帯: ${phone || '-'}`,
+            `メール: ${email}`,
+            `希望日時（第1）: ${date1Str}`,
+            `希望日時（第2）: ${date2Str || '-'}`,
+            `おすすめメニュー: ${recommended_menu || '-'}`,
             `スコア: ${score} / レベル: ${level}`,
-            `第2希望: ${date2Formatted || 'なし'}`,
-            `LP: ${lp || ''}`
+            `診断回答: ${answersStr}`,
           ].join('\n'),
-          start: { date: date },
-          end:   { date: date },
-          colorId: '6'           // タンジェリン（仮予約識別色）
-          // ⚠ attendees・sendUpdates は使用禁止
-          //   （サービスアカウントはDomain-Wide Delegation不要のため）
-        }
+          colorId: '6',
+          start: { date },
+          end:   { date },
+        },
       });
-    } catch (e) {
-      console.error('Calendar insert error (non-fatal):', e.message);
     }
+
+    // ── 3. Nodemailerメール通知（v3.4 §4-3）
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.GMAIL_USER || 'info.nexccess@gmail.com',
+          pass: process.env.GMAIL_APP_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail({
+        from: `"Path-Flow" <${process.env.GMAIL_USER || 'info.nexccess@gmail.com'}>`,
+        to:      NOTIFY_EMAIL,
+        replyTo: email,
+        subject: `【Path-Flow 予約通知】${name} 様 / ${date1Str}`,
+        text: [
+          '■ Path-Flow AI診断 予約通知',
+          '',
+          `お名前：${name}`,
+          `携帯電話：${phone || '-'}`,
+          `メール：${email}`,
+          '',
+          `希望日時（第1）：${date1Str}`,
+          `希望日時（第2）：${date2Str || '-'}`,
+          '',
+          `おすすめメニュー：${recommended_menu || '-'}`,
+          `スコア：${score} / レベル：${level}`,
+          '',
+          `診断回答：${answersStr}`,
+          '',
+          `LP識別：${lp || 'pathflow-v1'}`,
+          `送信日時：${now}`,
+        ].join('\n'),
+      });
+    } catch (mailErr) {
+      console.error('Nodemailer error (non-fatal):', mailErr.message);
+    }
+
+    return res.status(200).json({ ok: true });
+
+  } catch (err) {
+    console.error('save-shigyou error:', err.message);
+    return res.status(500).json({ error: err.message });
   }
-
-  // ── Resend オーナー通知メール ─────────────────
-  // 返信PASがない（reply-toのみ設定）
-  try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const subjectMap = {
-      customer: `【Path-Flow】新規予約: ${name} 様`,
-      partner:  `【Path-Flow】パートナー申込: ${name} 様`
-    };
-    const bodyLines = [
-      `送信日時　: ${now}`,
-      `モード　　: ${mode === 'partner' ? 'パートナー申込' : '顧客予約'}`,
-      `お名前　　: ${name}`,
-      `TEL　　　: ${phone || '—'}`,
-      `Email　　: ${email}`,
-      `会社名　　: ${company || '—'}`,
-      `希望日時　: ${dateFormatted || '—'}`,
-      `第2希望　 : ${date2Formatted || '—'}`,
-      `メニュー　: ${recommended_menu || '—'}`,
-      `スコア　　: ${score} / レベル: ${level}`,
-      `診断回答　: ${answersStr}`,
-      `LP ID　　: ${lp}`
-    ].join('\n');
-
-    // Resendテンプレートを使用
-    // https://resend.com/templates/e9b021fa-1ef0-40b3-a210-7a98f03b36b9/editor
-    await resend.emails.send({
-      from:     'Path-Flow <noreply@main.pathflow.org>',
-      to:       [process.env.OWNER_EMAIL || 'info.nexccess@gmail.com'],
-      reply_to: email,          // 返信はPAS不使用・reply-toで直接返信
-      subject:  subjectMap[mode] || `【Path-Flow】新規受付: ${name} 様`,
-      text:     bodyLines
-      // ※ html テンプレートはResendダッシュボード側で管理
-    });
-  } catch (e) {
-    console.error('Resend send error (non-fatal):', e.message);
-  }
-
-  return res.status(200).json({ ok: true });
 }
