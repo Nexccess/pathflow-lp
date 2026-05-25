@@ -2,340 +2,532 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>管理者ダッシュボード | Nexccess</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nexccess 管理者ダッシュボード</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --header-bg:   #0D1E35;
-  --page-bg:     #F8F7F2;
-  --card-bg:     #FFFFFF;
-  --gold:        #C8A45A;
-  --gold-light:  #F0E4C8;
-  --gold-dim:    #8B6E37;
-  --text-main:   #2D3436;
-  --text-sub:    #636E72;
-  --text-muted:  #B2BEC3;
-  --border:      #E8E4DC;
-  --green:       #00897B;
-  --green-light: #E0F2F0;
-  --red:         #C0392B;
-  --amber:       #E67E22;
-  --amber-light: #FEF3E6;
-  --shadow-sm:   0 1px 4px rgba(0,0,0,.06);
-  --shadow-md:   0 2px 12px rgba(0,0,0,.08);
-  --font-sans:   'Noto Sans JP', sans-serif;
-  --font-data:   'Inter', sans-serif;
-  --font-serif:  'Noto Serif JP', serif;
+  --bg:#f5f0e8;--navy:#0d1a36;--navy2:#192f60;
+  --gold:#c9a84c;--gold2:#e8d08a;
+  --white:#fff;--border:#e0d9cc;
+  --text:#1a1a2e;--muted:#6b7280;
+  --green:#5a9b7a;--red:#c0392b;
 }
-body{background:var(--page-bg);color:var(--text-main);font-family:var(--font-sans);min-height:100vh;font-size:16px;line-height:1.7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP','DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* HEADER */
-.header{background:var(--header-bg);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.18)}
-.header-logo{display:flex;align-items:center;gap:.75rem}
-.header-logo-mark{width:32px;height:32px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:.75rem;font-weight:600;color:var(--header-bg);flex-shrink:0}
-.header-logo-name{font-family:var(--font-serif);font-size:.95rem;color:#fff;letter-spacing:.04em}
-.header-logo-sub{font-size:.65rem;color:rgba(255,255,255,.4);display:block;margin-top:1px;font-family:var(--font-sans);font-weight:300}
-.header-right{display:flex;align-items:center;gap:.85rem}
-.source-badge{font-family:var(--font-data);font-size:.68rem;font-weight:600;padding:.28rem .7rem;border-radius:3px;letter-spacing:.08em}
-.source-live{background:var(--green-light);color:var(--green)}
-.source-mock{background:var(--amber-light);color:var(--amber)}
-.last-updated{font-family:var(--font-data);font-size:.72rem;color:rgba(255,255,255,.45)}
-.refresh-btn{font-size:.75rem;font-weight:500;padding:.38rem .9rem;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);background:none;cursor:pointer;border-radius:3px;transition:all .2s;letter-spacing:.04em}
-.refresh-btn:hover{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.5)}
+.header{
+  background:var(--navy);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,.2);
+}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-logo{
+  width:36px;height:36px;background:var(--gold);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:var(--navy);font-family:'DM Sans',sans-serif;
+}
+.header-title{color:var(--white);font-size:15px;font-weight:700}
+.header-sub{color:rgba(255,255,255,.5);font-size:11px;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:12px}
+.header-update{font-size:11px;color:rgba(255,255,255,.4)}
+.btn-refresh{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:var(--white);padding:6px 14px;border-radius:6px;
+  font-size:12px;font-weight:700;cursor:pointer;transition:background .2s;
+}
+.btn-refresh:hover{background:rgba(255,255,255,.2)}
+.btn-mock{
+  background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);
+  color:var(--gold2);padding:6px 14px;border-radius:6px;
+  font-size:12px;font-weight:700;cursor:pointer;
+}
 
-/* AUTH */
-.auth-screen{position:fixed;inset:0;z-index:9999;background:var(--page-bg);display:flex;align-items:center;justify-content:center}
-.auth-box{width:100%;max-width:380px;background:var(--card-bg);border-radius:8px;padding:3rem 2.5rem;box-shadow:var(--shadow-md);text-align:center;border:1px solid var(--border)}
-.auth-logo{font-family:var(--font-serif);font-size:1.2rem;color:var(--text-main);margin-bottom:.35rem}
-.auth-sub{font-size:.78rem;color:var(--text-sub);margin-bottom:2rem}
-.auth-input{width:100%;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:4px;color:var(--text-main);font-size:.88rem;text-align:center;letter-spacing:.2em;outline:none;transition:border-color .2s;font-family:var(--font-data);margin-bottom:.85rem}
-.auth-input:focus{border-color:var(--gold)}
-.auth-btn{width:100%;padding:.8rem;border-radius:4px;background:var(--header-bg);color:#fff;border:none;font-size:.85rem;font-weight:600;cursor:pointer;transition:opacity .2s;letter-spacing:.06em}
-.auth-btn:hover{opacity:.85}
-.auth-error{color:var(--red);font-size:.75rem;margin-top:.65rem;display:none}
+/* LP TABS */
+.lp-tabs{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:0 24px;display:flex;gap:0;overflow-x:auto;
+}
+.lp-tab{
+  padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;
+  border-bottom:2px solid transparent;color:var(--muted);
+  white-space:nowrap;transition:all .2s;
+}
+.lp-tab.active{color:var(--navy2);border-bottom-color:var(--gold)}
+.lp-tab:hover{color:var(--navy2)}
+.lp-status{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  margin-right:6px;margin-bottom:1px;
+}
+.lp-status.live{background:var(--green)}
+.lp-status.staging{background:var(--gold)}
+.lp-status.paused{background:var(--muted)}
 
 /* MAIN */
-.main{max-width:1280px;margin:0 auto;padding:2rem 2rem 3rem}
-.page-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
-.page-title{font-family:var(--font-serif);font-size:1.4rem;color:var(--text-main);font-weight:600}
-.page-date{font-size:.88rem;color:var(--text-sub);font-family:var(--font-data)}
+.main{padding:20px 24px;max-width:1200px;margin:0 auto}
 
-/* SEC LABEL */
-.sec-lbl{font-size:.78rem;font-weight:700;letter-spacing:.18em;color:var(--text-sub);text-transform:uppercase;margin-bottom:.85rem;display:flex;align-items:center;gap:.5rem}
-.sec-lbl::before{content:"";width:16px;height:2px;background:var(--gold);display:block}
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:768px){.kpi-grid{grid-template-columns:1fr 1fr}}
+.kpi-card{
+  background:var(--white);border-radius:12px;padding:18px 16px;
+  border:1px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.kpi-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.kpi-value{
+  font-family:'DM Sans',sans-serif;font-size:32px;font-weight:900;
+  color:var(--navy);line-height:1;margin-bottom:4px;
+}
+.kpi-sub{font-size:11px;color:var(--muted)}
+.kpi-gold .kpi-value{color:var(--gold)}
+.kpi-green .kpi-value{color:var(--green)}
+
+/* GRID 2COL */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
 
 /* CARD */
-.card{background:var(--card-bg);border-radius:8px;padding:1.75rem;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
+.card{background:var(--white);border-radius:12px;padding:20px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.card-title{
+  font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:16px;
+}
+.card-title::before{content:'—';opacity:.5}
 
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:1.75rem}
-.stat-card{background:var(--card-bg);border-radius:8px;padding:1.75rem 1.5rem;box-shadow:var(--shadow-sm);border:1px solid var(--border);border-top:3px solid var(--gold)}
-.stat-lbl{font-size:.85rem;font-weight:600;color:var(--text-sub);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.85rem}
-.stat-val{font-family:var(--font-data);font-size:3.2rem;font-weight:700;color:var(--text-main);line-height:1;letter-spacing:-.02em}
-.stat-val span{font-size:1.4rem;font-weight:400;color:var(--text-sub)}
-.stat-sub{font-size:.82rem;color:var(--text-muted);margin-top:.5rem}
-
-/* AI */
-.ai-card{background:var(--header-bg);border-radius:8px;padding:1.75rem;margin-bottom:1.75rem;box-shadow:var(--shadow-md)}
-.ai-lbl{font-size:.78rem;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
-.ai-lbl::before{content:"";width:16px;height:2px;background:var(--gold);display:block}
-.ai-text{font-size:1.05rem;line-height:2;color:rgba(255,255,255,.88);min-height:48px}
-.ai-loading{display:flex;align-items:center;gap:.65rem;color:rgba(255,255,255,.45);font-size:.85rem}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink .9s infinite}
-.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
-.ai-btn{margin-top:1.25rem;font-size:.88rem;font-weight:500;padding:.45rem 1.1rem;border:1px solid rgba(200,164,90,.4);color:var(--gold);background:none;cursor:pointer;border-radius:3px;transition:all .2s;letter-spacing:.06em}
-.ai-btn:hover{background:rgba(200,164,90,.1);border-color:var(--gold)}
-
-/* GRIDS */
-.mid-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.75rem}
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.75rem}
-
-/* ACTIVITY */
-.activity-list{display:flex;flex-direction:column;gap:.5rem;max-height:300px;overflow-y:auto}
-.activity-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;border-radius:5px;background:var(--page-bg);border:1px solid var(--border)}
-.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.activity-dot.high{background:var(--gold)}.activity-dot.booking{background:var(--green)}.activity-dot.normal{background:var(--text-muted)}
-.activity-time{font-family:var(--font-data);font-size:.82rem;color:var(--text-muted);flex-shrink:0;width:52px}
-.activity-text{font-size:.95rem;color:var(--text-main);flex:1}
-.activity-badge{font-family:var(--font-data);font-size:.78rem;font-weight:600;padding:.18rem .5rem;border-radius:3px;flex-shrink:0;background:var(--gold-light);color:var(--gold-dim);letter-spacing:.04em}
+/* ACTIVITY FEED */
+.feed-list{display:flex;flex-direction:column;gap:8px}
+.feed-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:8px;background:var(--bg);
+  font-size:13px;
+}
+.feed-time{font-size:11px;color:var(--muted);white-space:nowrap;min-width:52px}
+.feed-text{flex:1;color:var(--text)}
+.feed-badge{
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;
+  white-space:nowrap;
+}
+.badge-diag{background:rgba(25,47,96,.1);color:var(--navy2)}
+.badge-book{background:rgba(90,155,122,.1);color:var(--green)}
+.badge-page{background:rgba(201,168,76,.1);color:var(--gold)}
+.badge-line{background:rgba(6,199,85,.1);color:#06C755}
 
 /* TABLE */
-.data-table{width:100%;border-collapse:collapse}
-.data-table th{font-size:.8rem;font-weight:600;letter-spacing:.1em;color:var(--text-sub);text-align:left;padding:.65rem .85rem;border-bottom:2px solid var(--border);text-transform:uppercase;font-family:var(--font-data)}
-.data-table td{padding:.85rem .85rem;border-bottom:1px solid var(--border);font-size:.92rem;color:var(--text-main);vertical-align:middle}
-.data-table tr:last-child td{border-bottom:none}
-.data-table tr:hover td{background:var(--page-bg)}
-.event-name{font-family:var(--font-data);font-size:.9rem;font-weight:500}
-.event-count{font-family:var(--font-data);font-size:1.3rem;font-weight:700}
+.ab-table{width:100%;border-collapse:collapse}
+.ab-table th{
+  font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);padding:8px 12px;text-align:left;
+  border-bottom:1px solid var(--border);
+}
+.ab-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--bg)}
+.ab-table tr:last-child td{border-bottom:none}
+.badge-current{background:rgba(201,168,76,.15);color:var(--gold);font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px}
+.badge-old{background:var(--bg);color:var(--muted);font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px}
+.conv-rate{font-weight:700;color:var(--gold);font-family:'DM Sans',sans-serif}
 
-/* CHART */
-.chart-wrap{height:180px;display:flex;align-items:flex-end;gap:6px;padding:.5rem 0}
-.chart-outer{padding-bottom:28px}
-.bar{flex:1;background:var(--gold-light);border-radius:4px 4px 0 0;position:relative;transition:height .6s ease;cursor:pointer}
-.bar:hover{background:var(--gold)}
-.bar-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:.78rem;color:var(--text-muted);white-space:nowrap;font-family:var(--font-data)}
-.bar-val{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:.82rem;color:var(--gold-dim);font-family:var(--font-data);font-weight:600}
+/* BAR CHART */
+.bar-chart{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-label{font-size:12px;color:var(--text);min-width:100px;flex-shrink:0}
+.bar-track{flex:1;height:8px;background:var(--bg);border-radius:100px;overflow:hidden}
+.bar-fill{height:100%;background:var(--gold);border-radius:100px;transition:width .6s ease}
+.bar-pct{font-size:12px;font-weight:700;color:var(--gold);min-width:36px;text-align:right}
 
-/* PROGRESS */
-.progress-list{display:flex;flex-direction:column;gap:.85rem}
-.progress-item{display:flex;align-items:center;gap:.85rem}
-.progress-label{font-size:.95rem;color:var(--text-main);flex:0 0 130px}
-.progress-track{flex:1;height:9px;background:var(--border);border-radius:4px;overflow:hidden}
-.progress-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .8s ease}
-.progress-pct{font-family:var(--font-data);font-size:.88rem;font-weight:600;color:var(--gold-dim);flex:0 0 38px;text-align:right}
+/* TREND CHART */
+canvas{max-height:180px}
 
-/* PILL */
-.pill{display:inline-block;font-size:.65rem;font-weight:600;padding:.2rem .55rem;border-radius:10px;font-family:var(--font-data);letter-spacing:.04em;margin-left:.4rem}
-.pill-gold{background:var(--gold-light);color:var(--gold-dim)}
-.pill-gray{background:var(--page-bg);color:var(--text-sub);border:1px solid var(--border)}
+/* LOADING */
+.loading{text-align:center;padding:40px 0;color:var(--muted);font-size:13px}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.empty{color:var(--text-muted);font-size:.82rem;text-align:center;padding:2rem 0}
+/* ALERTS */
+.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none}
+.alert.show{display:block}
+.alert-warn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:#7a5a00}
+.alert-err{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);color:var(--red)}
 
-@media(max-width:1024px){.stats-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:768px){.mid-grid,.bottom-grid{grid-template-columns:1fr}.main{padding:1.25rem 1rem 3rem}}
+/* SS LINK */
+.ss-links{display:flex;flex-direction:column;gap:8px}
+.ss-link{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--bg);border-radius:8px;text-decoration:none;
+  color:var(--text);font-size:13px;transition:background .2s;
+}
+.ss-link:hover{background:var(--border)}
+.ss-icon{font-size:18px}
+.ss-name{flex:1;font-weight:500}
+.ss-sheet{font-size:11px;color:var(--muted)}
 </style>
 </head>
 <body>
 
-<div class="auth-screen" id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-logo">Nexccess</div>
-    <div class="auth-sub">管理者ダッシュボード</div>
-    <input type="password" class="auth-input" id="auth-input" placeholder="PASSWORD" onkeydown="if(event.key==='Enter')checkAuth()" autofocus>
-    <button class="auth-btn" onclick="checkAuth()">アクセス</button>
-    <div class="auth-error" id="auth-error">パスワードが違います</div>
-  </div>
-</div>
-
-<header class="header">
-  <div class="header-logo">
-    <div class="header-logo-mark">Nx</div>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">Nx</div>
     <div>
-      <span class="header-logo-name">Nexccess</span>
-      <span class="header-logo-sub">管理者ダッシュボード</span>
+      <div class="header-title">Nexccess 管理者ダッシュボード</div>
+      <div class="header-sub">更新: <span id="lastUpdate">—</span></div>
     </div>
   </div>
   <div class="header-right">
-    <span class="last-updated" id="last-updated">—</span>
-    <span class="source-badge source-mock" id="data-source">MOCK DATA</span>
-    <button class="refresh-btn" onclick="loadAll()">↻ 更新</button>
-  </div>
-</header>
-
-<div class="main">
-  <div class="page-title-row">
-    <div class="page-title">ダッシュボード</div>
-    <div class="page-date" id="page-date">—</div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-lbl">ページビュー</div><div class="stat-val" id="s-visits">—</div><div class="stat-sub">今月累計</div></div>
-    <div class="stat-card"><div class="stat-lbl">AI診断タップ</div><div class="stat-val" id="s-diags">—</div><div class="stat-sub">今月累計</div></div>
-    <div class="stat-card"><div class="stat-lbl">LINE / TG タップ</div><div class="stat-val" id="s-books">—</div><div class="stat-sub">今月累計</div></div>
-    <div class="stat-card"><div class="stat-lbl">診断完了率</div><div class="stat-val" id="s-rate">—<span>%</span></div><div class="stat-sub">診断 / PV</div></div>
-  </div>
-
-  <div class="ai-card">
-    <div class="ai-lbl">AI ADVISOR — Gemini による自然言語サマリー</div>
-    <div class="ai-text" id="ai-summary"><div class="ai-loading"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>分析中...</span></div></div>
-    <button class="ai-btn" onclick="refreshAI()">↻ サマリーを再生成</button>
-  </div>
-
-  <div class="mid-grid">
-    <div class="card">
-      <div class="sec-lbl">ACTIVITY FEED — FCB クリック</div>
-      <div class="activity-list" id="activity-feed"><div class="empty">読み込み中...</div></div>
-    </div>
-    <div class="card">
-      <div class="sec-lbl">TOP EVENTS — Amplitude</div>
-      <table class="data-table"><thead><tr><th>イベント名</th><th>回数</th><th>ユーザー数</th></tr></thead><tbody id="event-table-body"><tr><td colspan="3" class="empty">読み込み中...</td></tr></tbody></table>
-    </div>
-  </div>
-
-  <div class="bottom-grid">
-    <div class="card">
-      <div class="sec-lbl">TREND — 週別 PV</div>
-      <div class="chart-outer"><div class="chart-wrap" id="trend-chart"><div class="empty">データなし</div></div></div>
-    </div>
-    <div class="card">
-      <div class="sec-lbl">FCB CLICK MAP — ボタン別タップ率</div>
-      <div class="progress-list" id="needs-list"><div class="empty">読み込み中...</div></div>
-    </div>
-  </div>
-
-  <div class="card" style="margin-bottom:1.75rem">
-    <div class="sec-lbl">A/B TEST — LP 別パフォーマンス</div>
-    <table class="data-table" style="margin-top:.5rem">
-      <thead><tr><th>LP variant</th><th>PV</th><th>診断タップ</th><th>LINE タップ</th><th>転換率</th></tr></thead>
-      <tbody id="ab-table-body"><tr><td colspan="5" class="empty">A/B テストデータなし</td></tr></tbody>
-    </table>
+    <button class="btn-mock" onclick="loadMock()">MOCK DATA</button>
+    <button class="btn-refresh" onclick="loadAll()">↺ 更新</button>
   </div>
 </div>
 
+<!-- LP TABS -->
+<div class="lp-tabs" id="lpTabs"></div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="alert alert-warn" id="alertWarn"></div>
+  <div class="alert alert-err"  id="alertErr"></div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">ページビュー</div>
+      <div class="kpi-value" id="kpiPV">—</div>
+      <div class="kpi-sub">今月累計</div>
+    </div>
+    <div class="kpi-card kpi-gold">
+      <div class="kpi-label">AI診断タップ</div>
+      <div class="kpi-value" id="kpiDiag">—</div>
+      <div class="kpi-sub">今月累計</div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-label">診断完了率</div>
+      <div class="kpi-value" id="kpiRate">—</div>
+      <div class="kpi-sub">診断 / PV</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">予約完了</div>
+      <div class="kpi-value" id="kpiBook">—</div>
+      <div class="kpi-sub">booking_complete</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Activity Feed -->
+    <div class="card">
+      <div class="card-title">ACTIVITY FEED — 直近アクティビティ</div>
+      <div class="feed-list" id="feedList">
+        <div class="loading"><span class="spinner"></span>読み込み中...</div>
+      </div>
+    </div>
+
+    <!-- Trend Chart -->
+    <div class="card">
+      <div class="card-title">TREND — 週別 PV</div>
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Top Events -->
+    <div class="card">
+      <div class="card-title">TOP EVENTS — AMPLITUDE</div>
+      <div id="topEvents"><div class="loading"><span class="spinner"></span>読み込み中...</div></div>
+    </div>
+
+    <!-- FCB Click Map -->
+    <div class="card">
+      <div class="card-title">FCB CLICK MAP — ボタン別タップ率</div>
+      <div class="bar-chart" id="clickMap"></div>
+    </div>
+  </div>
+
+  <!-- A/B LP Performance -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">A/B TEST — LP別パフォーマンス</div>
+    <table class="ab-table">
+      <thead>
+        <tr>
+          <th>LP VARIANT</th><th>PV</th><th>診断タップ</th>
+          <th>予約完了</th><th>転換率</th>
+        </tr>
+      </thead>
+      <tbody id="abTable">
+        <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">読み込み中...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SS Links -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">SPREADSHEETS — データ蓄積先</div>
+    <div class="ss-links">
+      <a href="https://docs.google.com/spreadsheets/d/1IbDCONo1MFJZlnTjeEPicRVF5ULrdSPt2EGpVdsL2XE" target="_blank" class="ss-link">
+        <span class="ss-icon">📊</span>
+        <span class="ss-name">Path-Flow_AI診断結果</span>
+        <span class="ss-sheet">AI診断結果 | main.pathflow.org</span>
+      </a>
+      <a href="https://docs.google.com/spreadsheets/d/1lN54su98k_rhiB43G10cqUzQsY-34sKesxq4sZInKuM" target="_blank" class="ss-link">
+        <span class="ss-icon">📊</span>
+        <span class="ss-name">Path-Flow_2号機_士業DX診断</span>
+        <span class="ss-sheet">士業DX診断結果 | shigyo.pathflow.org</span>
+      </a>
+      <a href="https://docs.google.com/spreadsheets/d/1tKFUNvctedMI-kBqpLP49Gwnh1Df05UgGCOOBZg2F74" target="_blank" class="ss-link">
+        <span class="ss-icon">📊</span>
+        <span class="ss-name">スコアリング結果</span>
+        <span class="ss-sheet">スコアリング結果 | seisakukinyukouko.site</span>
+      </a>
+      <a href="https://docs.google.com/spreadsheets/d/1Yedly5_vjNiGWhBNgjE8IEzcrlWxnb6myX7-utkOpck" target="_blank" class="ss-link">
+        <span class="ss-icon">📊</span>
+        <span class="ss-name">AI診断結果（製作金融）</span>
+        <span class="ss-sheet">診断結果 | seisakukinyukouko.site</span>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
 <script>
-const ADMIN_PASSWORD = 'nexccess2026';
-function checkAuth(){
-  const v=document.getElementById('auth-input').value;
-  const e=document.getElementById('auth-error');
-  if(v===ADMIN_PASSWORD){
-    document.getElementById('auth-screen').style.display='none';
-    sessionStorage.setItem('nx-admin-auth','1');
-    loadAll();
-  }else{
-    e.style.display='block';
-    document.getElementById('auth-input').value='';
-    document.getElementById('auth-input').focus();
+/* ═══════════════════════════════════════
+   LP設定（v3.4 §7-2準拠）
+   ⚠ LP_IDはindex.htmlのLP_IDと完全一致
+═══════════════════════════════════════ */
+const LP_LIST = [
+  { id: 'ALL',         label: 'ALL（合算）',     url: '',                                    variant: '合算', status: 'live' },
+  { id: 'pathflow-v1', label: 'Path-Flow Main',  url: 'https://main.pathflow.org/',          variant: 'v1（稼働中）', status: 'live' },
+  { id: 'shigyo-v1',   label: 'Shigyo（士業）',  url: 'https://shigyo.pathflow.org/',        variant: 'v1（稼働中）', status: 'live' },
+  { id: 'seisaku-v1',  label: '製作金融',         url: 'https://www.seisakukinyukouko.site/', variant: 'v1（稼働中）', status: 'live' },
+];
+
+const AMP_KEY = '8d3b5be866c4740fa6c83949f85ce25e';
+let currentLP = 'ALL';
+let trendChart = null;
+let isMock = false;
+
+/* ─── Amplitude init ─── */
+const ampScript = document.createElement('script');
+ampScript.src = 'https://cdn.amplitude.com/libs/analytics-browser-2.3.1-min.js.gz';
+ampScript.onload = () => { amplitude.init(AMP_KEY, { defaultTracking: false }); };
+document.head.appendChild(ampScript);
+
+/* ─── Auto-refresh（4時間ごと：0/4/8/12/16/20時）─── */
+function scheduleRefresh() {
+  const now   = new Date();
+  const h     = now.getHours();
+  const next  = [0,4,8,12,16,20].find(t => t > h) ?? 24;
+  const msec  = ((next - h) * 60 - now.getMinutes()) * 60000 - now.getSeconds() * 1000;
+  setTimeout(() => { loadAll(); scheduleRefresh(); }, msec);
+}
+
+/* ─── LP Tabs ─── */
+function buildTabs() {
+  const el = document.getElementById('lpTabs');
+  el.innerHTML = LP_LIST.map(lp =>
+    `<div class="lp-tab${lp.id===currentLP?' active':''}" onclick="switchLP('${lp.id}')">
+      <span class="lp-status ${lp.status}"></span>${lp.label}
+    </div>`
+  ).join('');
+}
+
+function switchLP(id) {
+  currentLP = id;
+  buildTabs();
+  loadAll();
+}
+
+/* ─── Fetch Amplitude feed ─── */
+async function fetchFeed() {
+  try {
+    const r = await fetch('/api/amplitude-feed');
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  } catch (e) {
+    console.error('amplitude-feed error:', e);
+    return null;
   }
 }
-if(sessionStorage.getItem('nx-admin-auth')==='1')
-  document.getElementById('auth-screen').style.display='none';
 
-const CONFIG={AMPLITUDE_API_KEY:'',AMPLITUDE_SECRET_KEY:'',LOOKBACK_DAYS:30};
-const MOCK={
-  visits:142,diags:89,contacts:12,
-  activity:[
-    {time:'2分前',text:'LINE タップ',method:'LINE',type:'high'},
-    {time:'8分前',text:'AI診断 開始',method:'DIAG',type:'normal'},
-    {time:'15分前',text:'LINE タップ',method:'LINE',type:'booking'},
-    {time:'31分前',text:'Telegram タップ',method:'TG',type:'normal'},
-    {time:'52分前',text:'AI診断 完了',method:'DIAG',type:'high'},
-    {time:'1時間前',text:'銀行格付シミュ 開始',method:'FINANCE',type:'normal'},
-  ],
-  topEvents:[
-    {name:'page_view',count:142,users:98},
-    {name:'fcb_click LINE',count:12,users:11},
-    {name:'diagnosis_click',count:89,users:74},
-    {name:'fcb_click TG',count:8,users:8},
-    {name:'fcb_click 銀行格付',count:31,users:28},
-  ],
-  trend:[{label:'4週前',val:28},{label:'3週前',val:38},{label:'2週前',val:52},{label:'先週',val:61},{label:'今週',val:65}],
-  fcbClicks:[{label:'LINE 相談',pct:72},{label:'AI診断',pct:63},{label:'銀行格付シミュ',pct:44},{label:'Telegram',pct:28},{label:'メール',pct:12}],
-  abTest:[{variant:'kouko-v3（現行）',pv:98,diag:62,line:12,rate:'12.2%'},{variant:'kouko-v2（旧）',pv:44,diag:27,line:5,rate:'11.4%'}],
-};
-
-const isAmpConfigured=()=>CONFIG.AMPLITUDE_API_KEY.length>8&&CONFIG.AMPLITUDE_SECRET_KEY.length>8;
-
-async function fetchAmpSegmentation(event){
-  if(!isAmpConfigured())return null;
-  const end=new Date().toISOString().slice(0,10).replace(/-/g,'');
-  const start=new Date(Date.now()-CONFIG.LOOKBACK_DAYS*86400000).toISOString().slice(0,10).replace(/-/g,'');
-  const auth=btoa(`${CONFIG.AMPLITUDE_API_KEY}:${CONFIG.AMPLITUDE_SECRET_KEY}`);
-  const params=new URLSearchParams({e:JSON.stringify({event_type:event}),start,end,m:'totals'});
-  try{
-    const res=await fetch(`https://amplitude.com/api/2/events/segmentation?${params}`,{headers:{Authorization:`Basic ${auth}`}});
-    const data=await res.json();
-    return data?.data?.series?.[0]?.reduce((a,b)=>a+b,0)??null;
-  }catch{return null;}
+/* ─── Filter events by LP ─── */
+function filterByLP(events, lpId) {
+  if (lpId === 'ALL') return events;
+  return events.filter(e => (e.event_properties?.lp || '') === lpId);
 }
 
-async function fetchGeminiSummary(stats){
-  try{
-    const res=await fetch('/api/admin-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visits:stats.visits,diags:stats.diags,contacts:stats.contacts,days:CONFIG.LOOKBACK_DAYS})});
-    if(!res.ok)throw new Error(res.status);
-    const data=await res.json();
-    return data.summary??null;
-  }catch(e){console.warn('[admin-summary]',e);return null;}
-}
+/* ─── Load All ─── */
+async function loadAll() {
+  if (isMock) return;
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ja-JP');
 
-let LIVE={};
-async function loadAll(){
-  const now=new Date();
-  document.getElementById('last-updated').textContent='更新: '+now.toLocaleTimeString('ja-JP');
-  document.getElementById('page-date').textContent=now.toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
-  const srcEl=document.getElementById('data-source');
-  if(isAmpConfigured()){
-    srcEl.textContent='AMPLITUDE LIVE';srcEl.className='source-badge source-live';
-    const[pv,diag,contact]=await Promise.all([fetchAmpSegmentation('page_view'),fetchAmpSegmentation('diagnosis_click'),fetchAmpSegmentation('fcb_click')]);
-    LIVE={visits:pv??MOCK.visits,diags:diag??MOCK.diags,contacts:contact??MOCK.contacts};
-  }else{
-    srcEl.textContent='MOCK DATA';srcEl.className='source-badge source-mock';
-    LIVE={visits:MOCK.visits,diags:MOCK.diags,contacts:MOCK.contacts};
+  const data = await fetchFeed();
+  if (!data) {
+    showErr('Amplitude APIの取得に失敗しました。AMPLITUDE_SECRET_KEYを確認してください。');
+    return;
   }
-  renderStats(LIVE);renderActivity(MOCK.activity);renderTopEvents(MOCK.topEvents);renderTrend(MOCK.trend);renderFCBClicks(MOCK.fcbClicks);renderABTable(MOCK.abTest);
-  await refreshAI();
+
+  const events = data.events || [];
+  const filtered = filterByLP(events, currentLP);
+  renderAll(filtered, events);
 }
 
-function renderStats(d){
-  const rate=d.visits>0?Math.round(d.diags/d.visits*100):0;
-  document.getElementById('s-visits').innerHTML=d.visits.toLocaleString();
-  document.getElementById('s-diags').innerHTML=d.diags.toLocaleString();
-  document.getElementById('s-books').innerHTML=d.contacts.toLocaleString();
-  document.getElementById('s-rate').innerHTML=`${rate}<span>%</span>`;
+function renderAll(events, allEvents) {
+  // KPI
+  const pv   = events.filter(e => e.event_type === 'page_view').length;
+  const diag = events.filter(e => e.event_type === 'diagnosis_click').length;
+  const book = events.filter(e => e.event_type === 'booking_complete').length;
+  const rate = pv > 0 ? Math.round(diag / pv * 100) : 0;
+
+  document.getElementById('kpiPV').textContent   = pv.toLocaleString();
+  document.getElementById('kpiDiag').textContent = diag.toLocaleString();
+  document.getElementById('kpiRate').textContent = rate + '%';
+  document.getElementById('kpiBook').textContent = book.toLocaleString();
+
+  // Activity Feed
+  const recent = [...events].sort((a,b) => b.event_time - a.event_time).slice(0, 8);
+  document.getElementById('feedList').innerHTML = recent.length === 0
+    ? '<div class="loading">アクティビティなし</div>'
+    : recent.map(e => {
+        const ago  = Math.round((Date.now() - e.event_time) / 60000);
+        const agoStr = ago < 60 ? `${ago}分前` : `${Math.floor(ago/60)}時間前`;
+        const badge = e.event_type === 'diagnosis_click' ? 'DIAG' :
+                      e.event_type === 'booking_complete' ? 'BOOK' :
+                      e.event_type === 'page_view' ? 'PV' : 'EV';
+        const cls   = badge === 'DIAG' ? 'badge-diag' : badge === 'BOOK' ? 'badge-book' : badge === 'PV' ? 'badge-page' : 'badge-line';
+        const lp    = e.event_properties?.lp || '-';
+        return `<div class="feed-item">
+          <span class="feed-time">${agoStr}</span>
+          <span class="feed-text">${e.event_type} <span style="color:var(--muted);font-size:11px">[${lp}]</span></span>
+          <span class="feed-badge ${cls}">${badge}</span>
+        </div>`;
+      }).join('');
+
+  // Trend (weekly PV)
+  const weeks = buildWeeklyPV(events);
+  renderTrend(weeks);
+
+  // Top Events
+  const evMap = {};
+  events.forEach(e => {
+    evMap[e.event_type] = (evMap[e.event_type] || 0) + 1;
+  });
+  const sorted = Object.entries(evMap).sort((a,b) => b[1]-a[1]).slice(0,6);
+  document.getElementById('topEvents').innerHTML = `
+    <table class="ab-table">
+      <thead><tr><th>イベント名</th><th>回数</th></tr></thead>
+      <tbody>${sorted.map(([k,v]) => `<tr><td>${k}</td><td><strong>${v}</strong></td></tr>`).join('')}</tbody>
+    </table>`;
+
+  // FCB Click Map
+  const clicks = {
+    'LINE 相談':  events.filter(e => e.event_type === 'fcb_click_line').length,
+    'AI診断':     diag,
+    '予約完了':   book,
+  };
+  const maxC = Math.max(...Object.values(clicks), 1);
+  document.getElementById('clickMap').innerHTML =
+    Object.entries(clicks).map(([k,v]) =>
+      `<div class="bar-row">
+        <span class="bar-label">${k}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxC*100)}%"></div></div>
+        <span class="bar-pct">${pv > 0 ? Math.round(v/pv*100) : 0}%</span>
+      </div>`
+    ).join('');
+
+  // A/B Table
+  renderABTable(allEvents);
 }
-function renderActivity(list){
-  document.getElementById('activity-feed').innerHTML=list.map(a=>`<div class="activity-item"><div class="activity-dot ${a.type}"></div><div class="activity-time">${a.time}</div><div class="activity-text">${a.text}</div><div class="activity-badge">${a.method}</div></div>`).join('');
+
+function buildWeeklyPV(events) {
+  const weeks = [0,0,0,0,0];
+  const now = Date.now();
+  events.filter(e => e.event_type === 'page_view').forEach(e => {
+    const daysAgo = Math.floor((now - e.event_time) / 86400000);
+    const w = Math.floor(daysAgo / 7);
+    if (w < 5) weeks[4 - w]++;
+  });
+  return weeks;
 }
-function renderTopEvents(events){
-  document.getElementById('event-table-body').innerHTML=events.map(e=>`<tr><td><span class="event-name">${e.name}</span></td><td><span class="event-count">${e.count.toLocaleString()}</span></td><td style="font-family:var(--font-data);color:var(--text-sub)">${e.users.toLocaleString()}</td></tr>`).join('');
+
+function renderTrend(weeks) {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['4週前','3週前','2週前','先週','今週'],
+      datasets: [{
+        data: weeks,
+        backgroundColor: 'rgba(201,168,76,.6)',
+        borderColor: 'rgba(201,168,76,1)',
+        borderWidth: 1,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { font: { size: 10 } } },
+        x: { ticks: { font: { size: 10 } } },
+      },
+    },
+  });
 }
-function renderTrend(trend){
-  const el=document.getElementById('trend-chart');
-  const max=Math.max(...trend.map(t=>t.val));
-  el.innerHTML=trend.map(t=>`<div class="bar" style="height:${Math.round(t.val/max*100)}%"><span class="bar-val">${t.val}</span><span class="bar-label">${t.label}</span></div>`).join('');
+
+function renderABTable(allEvents) {
+  const rows = LP_LIST.filter(lp => lp.id !== 'ALL').map(lp => {
+    const ev   = allEvents.filter(e => (e.event_properties?.lp || '') === lp.id);
+    const pv   = ev.filter(e => e.event_type === 'page_view').length;
+    const diag = ev.filter(e => e.event_type === 'diagnosis_click').length;
+    const book = ev.filter(e => e.event_type === 'booking_complete').length;
+    const rate = pv > 0 ? (book / pv * 100).toFixed(1) : '0.0';
+    const isActive = lp.id === currentLP || currentLP === 'ALL';
+    return `<tr>
+      <td>${lp.label}<span class="${lp.status==='live'?'badge-current':'badge-old'}">${lp.variant}</span></td>
+      <td>${pv}</td><td>${diag}</td><td>${book}</td>
+      <td class="conv-rate">${rate}%</td>
+    </tr>`;
+  });
+  document.getElementById('abTable').innerHTML = rows.join('');
 }
-function renderFCBClicks(clicks){
-  document.getElementById('needs-list').innerHTML=clicks.map(n=>`<div class="progress-item"><div class="progress-label">${n.label}</div><div class="progress-track"><div class="progress-fill" style="width:${n.pct}%"></div></div><div class="progress-pct">${n.pct}%</div></div>`).join('');
+
+/* ─── Show Error ─── */
+function showErr(msg) {
+  const el = document.getElementById('alertErr');
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 8000);
 }
-function renderABTable(variants){
-  document.getElementById('ab-table-body').innerHTML=variants.map((v,i)=>`<tr><td>${v.variant}<span class="pill ${i===0?'pill-gold':'pill-gray'}">${i===0?'CURRENT':'OLD'}</span></td><td style="font-family:var(--font-data);font-weight:600">${v.pv}</td><td style="font-family:var(--font-data)">${v.diag}</td><td style="font-family:var(--font-data)">${v.line}</td><td style="font-family:var(--font-data);font-weight:700;color:var(--gold-dim)">${v.rate}</td></tr>`).join('');
-}
-async function refreshAI(){
-  const el=document.getElementById('ai-summary');
-  el.innerHTML=`<div class="ai-loading"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>Gemini が分析中...</span></div>`;
-  const stats=LIVE.visits?LIVE:MOCK;
-  const text=await fetchGeminiSummary(stats);
-  if(text){el.textContent=text;}
-  else{
-    const r=Math.round(stats.diags/stats.visits*100);
-    const c=Math.round(stats.contacts/stats.visits*100);
-    el.textContent=`診断完了率 ${r}%・問い合わせ転換率 ${c}% で推移。次のアクション：直近のLINEタップ数を確認し、未返信の問い合わせを今日中に優先対応してください。`;
+
+/* ─── Mock Data ─── */
+function loadMock() {
+  isMock = true;
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ja-JP') + ' (MOCK)';
+
+  // Generate mock events
+  const mockEvents = [];
+  const types = ['page_view','diagnosis_click','booking_complete','fcb_click_line'];
+  const lps   = ['pathflow-v1','shigyo-v1','seisaku-v1'];
+  const now   = Date.now();
+
+  for (let i = 0; i < 200; i++) {
+    const t = types[Math.floor(Math.random() * types.length)];
+    const l = lps[Math.floor(Math.random() * lps.length)];
+    const daysAgo = Math.floor(Math.random() * 28);
+    mockEvents.push({
+      event_type: t === 'booking_complete' && Math.random() > 0.3 ? 'page_view' : t,
+      event_time: now - daysAgo * 86400000 - Math.random() * 86400000,
+      event_properties: { lp: l },
+    });
   }
+
+  const filtered = filterByLP(mockEvents, currentLP);
+  renderAll(filtered, mockEvents);
 }
-if(sessionStorage.getItem('nx-admin-auth')==='1')loadAll();
+
+/* ─── Init ─── */
+buildTabs();
+loadAll();
+scheduleRefresh();
 </script>
 </body>
 </html>
