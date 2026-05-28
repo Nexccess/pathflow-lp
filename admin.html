@@ -107,6 +107,7 @@ body{font-family:'Noto Sans JP','DM Sans',sans-serif;background:var(--bg);color:
 }
 .feed-time{font-size:11px;color:var(--muted);white-space:nowrap;min-width:52px}
 .feed-text{flex:1;color:var(--text)}
+.feed-count{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:900;color:var(--navy);min-width:48px;text-align:right}
 .feed-badge{
   font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;
   white-space:nowrap;
@@ -115,6 +116,9 @@ body{font-family:'Noto Sans JP','DM Sans',sans-serif;background:var(--bg);color:
 .badge-book{background:rgba(90,155,122,.1);color:var(--green)}
 .badge-page{background:rgba(201,168,76,.1);color:var(--gold)}
 .badge-line{background:rgba(6,199,85,.1);color:#06C755}
+.feed-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.feed-hint a{color:var(--gold);text-decoration:none}
+.feed-hint a:hover{text-decoration:underline}
 
 /* TABLE */
 .ab-table{width:100%;border-collapse:collapse}
@@ -162,6 +166,14 @@ canvas{max-height:180px}
 .ss-icon{font-size:18px}
 .ss-name{flex:1;font-weight:500}
 .ss-sheet{font-size:11px;color:var(--muted)}
+
+/* LP PROPERTY WARNING */
+.lp-warn{
+  background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);
+  border-radius:8px;padding:10px 14px;font-size:12px;color:#7a5a00;
+  margin-bottom:14px;display:none;
+}
+.lp-warn.show{display:block}
 </style>
 </head>
 <body>
@@ -177,7 +189,7 @@ canvas{max-height:180px}
   </div>
   <div class="header-right">
     <button class="btn-mock" onclick="loadMock()">MOCK DATA</button>
-    <button class="btn-refresh" onclick="loadAll()">↺ 更新</button>
+    <button class="btn-refresh" onclick="resetAndLoad()">↺ 更新</button>
   </div>
 </div>
 
@@ -188,6 +200,11 @@ canvas{max-height:180px}
 <div class="main">
   <div class="alert alert-warn" id="alertWarn"></div>
   <div class="alert alert-err"  id="alertErr"></div>
+  <div class="lp-warn" id="lpWarn">
+    ⚠ <strong>トラッキング設定の確認が必要です：</strong>
+    各サイトの解析タグに <code>event_properties.lp</code> が未設定の可能性があります。
+    ALL の集計は正常ですが、LP 別内訳が 0 になっています。
+  </div>
 
   <!-- KPI -->
   <div class="kpi-grid">
@@ -214,9 +231,9 @@ canvas{max-height:180px}
   </div>
 
   <div class="grid-2">
-    <!-- Activity Feed -->
+    <!-- Activity Feed → 今月の実績サマリー -->
     <div class="card">
-      <div class="card-title">ACTIVITY FEED — 直近アクティビティ</div>
+      <div class="card-title">ACTIVITY FEED — 今月の実績サマリー</div>
       <div class="feed-list" id="feedList">
         <div class="loading"><span class="spinner"></span>読み込み中...</div>
       </div>
@@ -289,34 +306,38 @@ canvas{max-height:180px}
 </div><!-- /main -->
 
 <script>
-/* ═══════════════════════════════════════
-   LP設定（v3.4 §7-2準拠）
-   ⚠ LP_IDはindex.htmlのLP_IDと完全一致
-═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   LP 設定
+   ⚠ LP の ID は各サイトの Amplitude トラッキングタグで送信する
+     event_properties.lp の値と完全一致させること。
+   ⚠ 新サイト追加時は api/amplitude-feed.js の LP_IDS にも同じ ID を追記。
+═══════════════════════════════════════════════════════════════ */
 const LP_LIST = [
-  { id: 'ALL',         label: 'ALL（合算）',     url: '',                                    variant: '合算', status: 'live' },
+  { id: 'ALL',         label: 'ALL（合算）',     url: '',                                    variant: '合算',        status: 'live' },
   { id: 'pathflow-v1', label: 'Path-Flow Main',  url: 'https://main.pathflow.org/',          variant: 'v1（稼働中）', status: 'live' },
   { id: 'shigyo-v1',   label: 'Shigyo（士業）',  url: 'https://shigyo.pathflow.org/',        variant: 'v1（稼働中）', status: 'live' },
   { id: 'seisaku-v1',  label: '製作金融',         url: 'https://www.seisakukinyukouko.site/', variant: 'v1（稼働中）', status: 'live' },
 ];
 
-const AMP_KEY = '8d3b5be866c4740fa6c83949f85ce25e';
-let currentLP = 'ALL';
-let trendChart = null;
-let isMock = false;
+// Amplitude tracking key（イベント送信用）
+const AMP_TRACKING_KEY = '8d3b5be866c4740fa6c83949f85ce25e';
 
-/* ─── Amplitude init ─── */
+let currentLP  = 'ALL';
+let trendChart = null;
+let isMock     = false;
+
+/* ─── Amplitude SDK（送信専用） ─── */
 const ampScript = document.createElement('script');
 ampScript.src = 'https://cdn.amplitude.com/libs/analytics-browser-2.3.1-min.js.gz';
-ampScript.onload = () => { amplitude.init(AMP_KEY, { defaultTracking: false }); };
+ampScript.onload = () => { amplitude.init(AMP_TRACKING_KEY, { defaultTracking: false }); };
 document.head.appendChild(ampScript);
 
-/* ─── Auto-refresh（4時間ごと：0/4/8/12/16/20時）─── */
+/* ─── Auto-refresh（0/4/8/12/16/20 時） ─── */
 function scheduleRefresh() {
-  const now   = new Date();
-  const h     = now.getHours();
-  const next  = [0,4,8,12,16,20].find(t => t > h) ?? 24;
-  const msec  = ((next - h) * 60 - now.getMinutes()) * 60000 - now.getSeconds() * 1000;
+  const now  = new Date();
+  const h    = now.getHours();
+  const next = [0,4,8,12,16,20].find(t => t > h) ?? 24;
+  const msec = ((next - h) * 60 - now.getMinutes()) * 60000 - now.getSeconds() * 1000;
   setTimeout(() => { loadAll(); scheduleRefresh(); }, msec);
 }
 
@@ -324,7 +345,7 @@ function scheduleRefresh() {
 function buildTabs() {
   const el = document.getElementById('lpTabs');
   el.innerHTML = LP_LIST.map(lp =>
-    `<div class="lp-tab${lp.id===currentLP?' active':''}" onclick="switchLP('${lp.id}')">
+    `<div class="lp-tab${lp.id === currentLP ? ' active' : ''}" onclick="switchLP('${lp.id}')">
       <span class="lp-status ${lp.status}"></span>${lp.label}
     </div>`
   ).join('');
@@ -333,25 +354,24 @@ function buildTabs() {
 function switchLP(id) {
   currentLP = id;
   buildTabs();
-  loadAll();
-}
-
-/* ─── Fetch Amplitude feed ─── */
-async function fetchFeed() {
-  try {
-    const r = await fetch('/api/amplitude-feed');
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return await r.json();
-  } catch (e) {
-    console.error('amplitude-feed error:', e);
-    return null;
+  if (isMock) {
+    renderFromCache();
+  } else {
+    loadAll();
   }
 }
 
-/* ─── Filter events by LP ─── */
-function filterByLP(events, lpId) {
-  if (lpId === 'ALL') return events;
-  return events.filter(e => (e.event_properties?.lp || '') === lpId);
+/* キャッシュ（モック切り替え用） */
+let _cachedData = null;
+
+/* ─── Fetch /api/amplitude-feed ─── */
+async function fetchFeed() {
+  const r = await fetch('/api/amplitude-feed');
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    throw new Error(body.error || `HTTP ${r.status}`);
+  }
+  return body;
 }
 
 /* ─── Load All ─── */
@@ -359,96 +379,102 @@ async function loadAll() {
   if (isMock) return;
   document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ja-JP');
 
-  const data = await fetchFeed();
-  if (!data) {
-    showErr('Amplitude APIの取得に失敗しました。AMPLITUDE_SECRET_KEYを確認してください。');
-    return;
-  }
+  try {
+    const data   = await fetchFeed();
+    _cachedData  = data;
+    clearErr();
 
-  const events = data.events || [];
-  const filtered = filterByLP(events, currentLP);
-  renderAll(filtered, events);
+    // lp プロパティ未設定の警告
+    const meta = data._meta || {};
+    document.getElementById('lpWarn').classList.toggle('show', !!meta.lpPropertyMissing);
+
+    renderFromCache();
+  } catch (e) {
+    showErr(e.message);
+  }
 }
 
-function renderAll(events, allEvents) {
-  // KPI
-  const pv   = events.filter(e => e.event_type === 'page_view').length;
-  const diag = events.filter(e => e.event_type === 'diagnosis_click').length;
-  const book = events.filter(e => e.event_type === 'booking_complete').length;
+function renderFromCache() {
+  if (!_cachedData) return;
+  const kpi    = _cachedData.kpi?.[currentLP]    ?? { pv:0, diag:0, book:0, line:0 };
+  const weekly = _cachedData.weekly?.[currentLP] ?? [0,0,0,0,0];
+  renderAll(kpi, weekly, _cachedData);
+}
+
+/* ─── Render All ─── */
+function renderAll(kpi, weekly, allData) {
+  const { pv, diag, book, line } = kpi;
   const rate = pv > 0 ? Math.round(diag / pv * 100) : 0;
 
+  // ── KPI Cards ──
   document.getElementById('kpiPV').textContent   = pv.toLocaleString();
   document.getElementById('kpiDiag').textContent = diag.toLocaleString();
   document.getElementById('kpiRate').textContent = rate + '%';
   document.getElementById('kpiBook').textContent = book.toLocaleString();
 
-  // Activity Feed
-  const recent = [...events].sort((a,b) => b.event_time - a.event_time).slice(0, 8);
-  document.getElementById('feedList').innerHTML = recent.length === 0
-    ? '<div class="loading">アクティビティなし</div>'
-    : recent.map(e => {
-        const ago  = Math.round((Date.now() - e.event_time) / 60000);
-        const agoStr = ago < 60 ? `${ago}分前` : `${Math.floor(ago/60)}時間前`;
-        const badge = e.event_type === 'diagnosis_click' ? 'DIAG' :
-                      e.event_type === 'booking_complete' ? 'BOOK' :
-                      e.event_type === 'page_view' ? 'PV' : 'EV';
-        const cls   = badge === 'DIAG' ? 'badge-diag' : badge === 'BOOK' ? 'badge-book' : badge === 'PV' ? 'badge-page' : 'badge-line';
-        const lp    = e.event_properties?.lp || '-';
-        return `<div class="feed-item">
-          <span class="feed-time">${agoStr}</span>
-          <span class="feed-text">${e.event_type} <span style="color:var(--muted);font-size:11px">[${lp}]</span></span>
-          <span class="feed-badge ${cls}">${badge}</span>
-        </div>`;
-      }).join('');
+  // ── Activity Feed（集計サマリー）──
+  const evSummary = [
+    { label: 'ページビュー',     val: pv,   badge: 'PV',   cls: 'badge-page' },
+    { label: 'AI診断タップ',     val: diag, badge: 'DIAG', cls: 'badge-diag' },
+    { label: '予約完了',         val: book, badge: 'BOOK', cls: 'badge-book' },
+    { label: 'LINE 相談クリック', val: line, badge: 'LINE', cls: 'badge-line' },
+  ];
+  document.getElementById('feedList').innerHTML =
+    evSummary.map(r =>
+      `<div class="feed-item">
+        <span class="feed-badge ${r.cls}">${r.badge}</span>
+        <span class="feed-text">${r.label}</span>
+        <span class="feed-count">${r.val.toLocaleString()}</span>
+      </div>`
+    ).join('') +
+    `<div class="feed-hint">
+      リアルタイムフィードは
+      <a href="https://app.amplitude.com/analytics/bitter-shadow-661657" target="_blank">Amplitude Dashboard</a>
+      でご確認ください
+    </div>`;
 
-  // Trend (weekly PV)
-  const weeks = buildWeeklyPV(events);
-  renderTrend(weeks);
+  // ── Trend Chart ──
+  renderTrend(weekly);
 
-  // Top Events
-  const evMap = {};
-  events.forEach(e => {
-    evMap[e.event_type] = (evMap[e.event_type] || 0) + 1;
-  });
-  const sorted = Object.entries(evMap).sort((a,b) => b[1]-a[1]).slice(0,6);
-  document.getElementById('topEvents').innerHTML = `
-    <table class="ab-table">
-      <thead><tr><th>イベント名</th><th>回数</th></tr></thead>
-      <tbody>${sorted.map(([k,v]) => `<tr><td>${k}</td><td><strong>${v}</strong></td></tr>`).join('')}</tbody>
-    </table>`;
+  // ── Top Events ──
+  const evMap = [
+    ['page_view',        pv],
+    ['diagnosis_click',  diag],
+    ['booking_complete', book],
+    ['fcb_click_line',   line],
+  ].filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
 
-  // FCB Click Map
-  const clicks = {
-    'LINE 相談':  events.filter(e => e.event_type === 'fcb_click_line').length,
-    'AI診断':     diag,
-    '予約完了':   book,
-  };
-  const maxC = Math.max(...Object.values(clicks), 1);
+  document.getElementById('topEvents').innerHTML = evMap.length === 0
+    ? '<div class="loading">データなし（今月の集計がまだありません）</div>'
+    : `<table class="ab-table">
+        <thead><tr><th>イベント名</th><th>回数</th></tr></thead>
+        <tbody>
+          ${evMap.map(([k, v]) =>
+            `<tr><td>${k}</td><td><strong>${v.toLocaleString()}</strong></td></tr>`
+          ).join('')}
+        </tbody>
+      </table>`;
+
+  // ── FCB Click Map ──
+  const clicks  = { 'LINE 相談': line, 'AI診断': diag, '予約完了': book };
+  const maxC    = Math.max(...Object.values(clicks), 1);
   document.getElementById('clickMap').innerHTML =
-    Object.entries(clicks).map(([k,v]) =>
+    Object.entries(clicks).map(([k, v]) =>
       `<div class="bar-row">
         <span class="bar-label">${k}</span>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxC*100)}%"></div></div>
-        <span class="bar-pct">${pv > 0 ? Math.round(v/pv*100) : 0}%</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${Math.round(v / maxC * 100)}%"></div>
+        </div>
+        <span class="bar-pct">${pv > 0 ? Math.round(v / pv * 100) : 0}%</span>
       </div>`
     ).join('');
 
-  // A/B Table
-  renderABTable(allEvents);
+  // ── A/B Table ──
+  renderABTable(allData);
 }
 
-function buildWeeklyPV(events) {
-  const weeks = [0,0,0,0,0];
-  const now = Date.now();
-  events.filter(e => e.event_type === 'page_view').forEach(e => {
-    const daysAgo = Math.floor((now - e.event_time) / 86400000);
-    const w = Math.floor(daysAgo / 7);
-    if (w < 5) weeks[4 - w]++;
-  });
-  return weeks;
-}
-
-function renderTrend(weeks) {
+/* ─── Trend Chart ─── */
+function renderTrend(weekly) {
   const ctx = document.getElementById('trendChart').getContext('2d');
   if (trendChart) trendChart.destroy();
   trendChart = new Chart(ctx, {
@@ -456,7 +482,7 @@ function renderTrend(weeks) {
     data: {
       labels: ['4週前','3週前','2週前','先週','今週'],
       datasets: [{
-        data: weeks,
+        data: weekly,
         backgroundColor: 'rgba(201,168,76,.6)',
         borderColor: 'rgba(201,168,76,1)',
         borderWidth: 1,
@@ -473,55 +499,82 @@ function renderTrend(weeks) {
   });
 }
 
-function renderABTable(allEvents) {
+/* ─── A/B Table ─── */
+function renderABTable(allData) {
   const rows = LP_LIST.filter(lp => lp.id !== 'ALL').map(lp => {
-    const ev   = allEvents.filter(e => (e.event_properties?.lp || '') === lp.id);
-    const pv   = ev.filter(e => e.event_type === 'page_view').length;
-    const diag = ev.filter(e => e.event_type === 'diagnosis_click').length;
-    const book = ev.filter(e => e.event_type === 'booking_complete').length;
-    const rate = pv > 0 ? (book / pv * 100).toFixed(1) : '0.0';
-    const isActive = lp.id === currentLP || currentLP === 'ALL';
+    const k    = allData?.kpi?.[lp.id] ?? { pv: 0, diag: 0, book: 0 };
+    const rate = k.pv > 0 ? (k.book / k.pv * 100).toFixed(1) : '0.0';
     return `<tr>
-      <td>${lp.label}<span class="${lp.status==='live'?'badge-current':'badge-old'}">${lp.variant}</span></td>
-      <td>${pv}</td><td>${diag}</td><td>${book}</td>
+      <td>
+        ${lp.url
+          ? `<a href="${lp.url}" target="_blank" style="color:var(--navy2);text-decoration:none">${lp.label}</a>`
+          : lp.label
+        }
+        <span class="${lp.status === 'live' ? 'badge-current' : 'badge-old'}">${lp.variant}</span>
+      </td>
+      <td>${k.pv.toLocaleString()}</td>
+      <td>${k.diag.toLocaleString()}</td>
+      <td>${k.book.toLocaleString()}</td>
       <td class="conv-rate">${rate}%</td>
     </tr>`;
   });
   document.getElementById('abTable').innerHTML = rows.join('');
 }
 
-/* ─── Show Error ─── */
+/* ─── エラー表示 ─── */
 function showErr(msg) {
   const el = document.getElementById('alertErr');
-  el.textContent = '⚠ ' + msg;
+  el.innerHTML = `⚠ ${msg}`;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 8000);
+}
+function clearErr() {
+  document.getElementById('alertErr').classList.remove('show');
+}
+
+/* ─── リセット＆リロード ─── */
+function resetAndLoad() {
+  isMock = false;
+  _cachedData = null;
+  loadAll();
 }
 
 /* ─── Mock Data ─── */
 function loadMock() {
   isMock = true;
-  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ja-JP') + ' (MOCK)';
+  document.getElementById('lastUpdate').textContent =
+    new Date().toLocaleTimeString('ja-JP') + ' (MOCK)';
+  clearErr();
+  document.getElementById('lpWarn').classList.remove('show');
 
-  // Generate mock events
-  const mockEvents = [];
-  const types = ['page_view','diagnosis_click','booking_complete','fcb_click_line'];
-  const lps   = ['pathflow-v1','shigyo-v1','seisaku-v1'];
-  const now   = Date.now();
+  const lpIds = LP_LIST.filter(l => l.id !== 'ALL').map(l => l.id);
+  const mockKpi = {};
 
-  for (let i = 0; i < 200; i++) {
-    const t = types[Math.floor(Math.random() * types.length)];
-    const l = lps[Math.floor(Math.random() * lps.length)];
-    const daysAgo = Math.floor(Math.random() * 28);
-    mockEvents.push({
-      event_type: t === 'booking_complete' && Math.random() > 0.3 ? 'page_view' : t,
-      event_time: now - daysAgo * 86400000 - Math.random() * 86400000,
-      event_properties: { lp: l },
-    });
-  }
+  lpIds.forEach(id => {
+    const pv   = Math.floor(Math.random() * 600 + 100);
+    const diag = Math.floor(pv * (Math.random() * 0.3 + 0.1));
+    const book = Math.floor(diag * (Math.random() * 0.2 + 0.05));
+    const line = Math.floor(pv * (Math.random() * 0.1 + 0.02));
+    mockKpi[id] = { pv, diag, book, line };
+  });
 
-  const filtered = filterByLP(mockEvents, currentLP);
-  renderAll(filtered, mockEvents);
+  mockKpi.ALL = lpIds.reduce(
+    (acc, id) => ({
+      pv:   acc.pv   + mockKpi[id].pv,
+      diag: acc.diag + mockKpi[id].diag,
+      book: acc.book + mockKpi[id].book,
+      line: acc.line + mockKpi[id].line,
+    }),
+    { pv: 0, diag: 0, book: 0, line: 0 }
+  );
+
+  const mockWeekly = { ALL: [0, 0, 0, 0, 0] };
+  lpIds.forEach(id => {
+    mockWeekly[id] = Array.from({ length: 5 }, () => Math.floor(Math.random() * 100 + 10));
+    for (let i = 0; i < 5; i++) mockWeekly.ALL[i] += mockWeekly[id][i];
+  });
+
+  _cachedData = { kpi: mockKpi, weekly: mockWeekly };
+  renderFromCache();
 }
 
 /* ─── Init ─── */
