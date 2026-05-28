@@ -151,6 +151,20 @@ body{font-family:'DM Sans','Noto Sans JP',sans-serif;overflow-x:hidden;-webkit-f
 .diag-benefit-item h5{color:var(--green);}
 .diag-pain-item p,.diag-benefit-item p{font-size:11px;color:#c8d4e0;line-height:1.6;}
 
+.diag-menu-card{
+  background:rgba(201,168,76,0.07);
+  border:1.5px solid rgba(201,168,76,0.3);
+  border-radius:12px;padding:16px 18px;
+}
+.diag-menu-name{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:16px;font-weight:900;color:#fff;
+  margin:6px 0 4px;line-height:1.4;
+}
+.diag-menu-price{
+  font-size:13px;font-weight:700;color:var(--gold-lt);
+}
+
 /* form in modal */
 .diag-form-wrap{
   background:rgba(255,255,255,0.04);
@@ -542,36 +556,36 @@ var Q_USER = [
   { step:'STEP 01 / 04', q:'あなたのビジネスの現状を教えてください',
     hint:'最も当てはまるものをひとつ選んでください',
     opts:[
-      {icon:'📉', text:'商談数が月によって大きくバラつく'},
-      {icon:'⏰', text:'見込み客への対応が遅れ、機会を逃している'},
-      {icon:'🎲', text:'どのリードを優先すべきか判断できていない'},
-      {icon:'📝', text:'毎回ゼロからヒアリングで商談時間が無駄になる'},
-      {icon:'💰', text:'広告費をかけているが成約率が上がらない'},
+      {icon:'📉', text:'商談数が月によって大きくバラつく',               score:2},
+      {icon:'⏰', text:'見込み客への対応が遅れ、機会を逃している',          score:4},
+      {icon:'🎲', text:'どのリードを優先すべきか判断できていない',          score:3},
+      {icon:'📝', text:'毎回ゼロからヒアリングで商談時間が無駄になる',      score:3},
+      {icon:'💰', text:'広告費をかけているが成約率が上がらない',            score:4},
     ]},
   { step:'STEP 02 / 04', q:'営業・集客で最も課題になっていることは？',
     hint:'当てはまるものをひとつ選んでください',
     opts:[
-      {icon:'🌙', text:'夜間・休日の問い合わせに対応できていない'},
-      {icon:'📅', text:'日程調整のやり取りに時間がかかりすぎる'},
-      {icon:'👤', text:'担当者がいないと営業が止まる属人化問題'},
-      {icon:'📊', text:'データがなく感覚頼りの意思決定をしている'},
-      {icon:'🔁', text:'リピート・紹介が生まれる仕組みがない'},
+      {icon:'🌙', text:'夜間・休日の問い合わせに対応できていない',          score:4},
+      {icon:'📅', text:'日程調整のやり取りに時間がかかりすぎる',            score:3},
+      {icon:'👤', text:'担当者がいないと営業が止まる属人化問題',            score:4},
+      {icon:'📊', text:'データがなく感覚頼りの意思決定をしている',          score:3},
+      {icon:'🔁', text:'リピート・紹介が生まれる仕組みがない',              score:2},
     ]},
   { step:'STEP 03 / 04', q:'Path-Flow導入で最も期待する効果は？',
     hint:'イメージに最も近いものをひとつ選んでください',
     opts:[
-      {icon:'🤖', text:'24時間AIが自動対応し機会損失をゼロにしたい'},
-      {icon:'📈', text:'商談化率・成約率を数字で改善したい'},
-      {icon:'⚡', text:'営業工数を削減してコア業務に集中したい'},
-      {icon:'🗂', text:'顧客データを蓄積して経営判断に活かしたい'},
+      {icon:'🤖', text:'24時間AIが自動対応し機会損失をゼロにしたい',       score:4},
+      {icon:'📈', text:'商談化率・成約率を数字で改善したい',                score:4},
+      {icon:'⚡', text:'営業工数を削減してコア業務に集中したい',            score:3},
+      {icon:'🗂', text:'顧客データを蓄積して経営判断に活かしたい',          score:3},
     ]},
   { step:'STEP 04 / 04', q:'会社の規模を教えてください',
     hint:'最も近いものをひとつ選んでください',
     opts:[
-      {icon:'👤', text:'個人事業・フリーランス'},
-      {icon:'👥', text:'2〜10名'},
-      {icon:'🏢', text:'11〜50名'},
-      {icon:'🏙', text:'51名以上'},
+      {icon:'👤', text:'個人事業・フリーランス', score:2},
+      {icon:'👥', text:'2〜10名',               score:3},
+      {icon:'🏢', text:'11〜50名',              score:4},
+      {icon:'🏙', text:'51名以上',              score:5},
     ]},
 ];
 
@@ -579,37 +593,37 @@ var Q_PARTNER = [
   { step:'STEP 01 / 04', q:'あなたのビジネスの立場を教えてください',
     hint:'最も近いものをひとつ選んでください',
     opts:[
-      {icon:'📢', text:'広告代理店・Webマーケター'},
-      {icon:'🏛', text:'税理士・社労士・中小企業診断士'},
-      {icon:'🏦', text:'金融機関・地方銀行・信用金庫'},
-      {icon:'💻', text:'ITベンダー・SaaS事業者'},
-      {icon:'📱', text:'メディア運営・アフィリエイター'},
-      {icon:'🔗', text:'コンサルタント・その他'},
+      {icon:'📢', text:'広告代理店・Webマーケター',         score:4},
+      {icon:'🏛', text:'税理士・社労士・中小企業診断士',    score:4},
+      {icon:'🏦', text:'金融機関・地方銀行・信用金庫',      score:5},
+      {icon:'💻', text:'ITベンダー・SaaS事業者',            score:4},
+      {icon:'📱', text:'メディア運営・アフィリエイター',    score:2},
+      {icon:'🔗', text:'コンサルタント・その他',            score:3},
     ]},
   { step:'STEP 02 / 04', q:'今、顧客への提案で最も課題になっていることは？',
     hint:'当てはまるものをひとつ選んでください',
     opts:[
-      {icon:'📉', text:'広告投資に対して成果（CVR）が見えにくい'},
-      {icon:'🤝', text:'顧問先・既存顧客への提案が頭打ちになっている'},
-      {icon:'⚙️', text:'自社サービスの差別化ポイントが弱い'},
-      {icon:'⏰', text:'営業工数が多く効率化できていない'},
-      {icon:'💰', text:'新たなストック収益の柱を構築したい'},
+      {icon:'📉', text:'広告投資に対して成果（CVR）が見えにくい',        score:3},
+      {icon:'🤝', text:'顧問先・既存顧客への提案が頭打ちになっている',   score:4},
+      {icon:'⚙️', text:'自社サービスの差別化ポイントが弱い',             score:3},
+      {icon:'⏰', text:'営業工数が多く効率化できていない',                score:3},
+      {icon:'💰', text:'新たなストック収益の柱を構築したい',              score:4},
     ]},
   { step:'STEP 03 / 04', q:'Path-Flowを自社に組み込んだ場合、最も期待する効果は？',
     hint:'イメージに最も近いものをひとつ選んでください',
     opts:[
-      {icon:'📊', text:'クライアントの成約率を数値で証明できる'},
-      {icon:'💼', text:'顧問先への高単価サービスに格上げできる'},
-      {icon:'🔁', text:'紹介・提案からのストック収益を構築できる'},
-      {icon:'🚀', text:'自社の競合優位性を圧倒的に高められる'},
+      {icon:'📊', text:'クライアントの成約率を数値で証明できる',          score:4},
+      {icon:'💼', text:'顧問先への高単価サービスに格上げできる',          score:5},
+      {icon:'🔁', text:'紹介・提案からのストック収益を構築できる',        score:4},
+      {icon:'🚀', text:'自社の競合優位性を圧倒的に高められる',            score:4},
     ]},
   { step:'STEP 04 / 04', q:'現在の顧客・クライアント数の規模は？',
     hint:'最も近いものをひとつ選んでください',
     opts:[
-      {icon:'👤', text:'5社未満'},
-      {icon:'👥', text:'5〜20社'},
-      {icon:'🏢', text:'21〜100社'},
-      {icon:'🏙', text:'100社以上'},
+      {icon:'👤', text:'5社未満',    score:2},
+      {icon:'👥', text:'5〜20社',   score:3},
+      {icon:'🏢', text:'21〜100社', score:4},
+      {icon:'🏙', text:'100社以上', score:5},
     ]},
 ];
 
@@ -639,7 +653,8 @@ function renderStep(idx){
 function selectOpt(stepIdx, optIdx, el){
   document.querySelectorAll('.diag-opt').forEach(function(e){ e.classList.remove('selected'); });
   el.classList.add('selected');
-  window._diagAnswers[stepIdx] = getQuestions()[stepIdx].opts[optIdx].text;
+  var opt = getQuestions()[stepIdx].opts[optIdx];
+  window._diagAnswers[stepIdx] = { text: opt.text, score: opt.score || 0 };
   var btn = document.getElementById('diag-next-btn');
   if(btn){ btn.disabled = false; }
 }
@@ -700,6 +715,15 @@ function renderResult(data){
     return '<div class="diag-benefit-item"><h5>✓ '+b.title+'</h5><p>'+b.desc+'</p></div>';
   }).join('');
 
+  // recommended_menu block (diagnose.js returns recommended_menu / recommended_price)
+  var menuHTML = (data.recommended_menu)
+    ? '<div class="diag-menu-card">'+
+        '<span class="diag-section-title">おすすめメニュー</span>'+
+        '<div class="diag-menu-name">'+data.recommended_menu+'</div>'+
+        (data.recommended_price ? '<div class="diag-menu-price">'+data.recommended_price+'</div>' : '')+
+      '</div>'
+    : '';
+
   var formTitle = window._diagMode==='partner'
     ? '詳細資料を受け取る・個別相談を予約する'
     : '相談を予約して診断レポートを受け取る';
@@ -719,6 +743,10 @@ function renderResult(data){
       '<option>飲食・サービス</option><option>士業・コンサル</option>'+
       '<option>IT・Web</option><option>その他</option>';
 
+  // 明日以降の日付を min に設定
+  var tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  var minDate = tomorrow.toISOString().slice(0,10);
+
   document.getElementById('diag-steps').innerHTML =
     '<div class="diag-result-wrap">'+
       '<div class="diag-score-card">'+
@@ -731,17 +759,15 @@ function renderResult(data){
             '</div>'+
           '</div>'+
         '</div>'+
-        '<div class="diag-score-headline">'+data.headline+'</div>'+
-        '<div class="diag-score-summary">'+data.summary+'</div>'+
+        '<div class="diag-score-headline">'+(data.headline||'')+'</div>'+
+        '<div class="diag-score-summary">'+(data.reason||data.summary||'')+'</div>'+
       '</div>'+
+      menuHTML+
       '<div>'+
         '<span class="diag-section-title">IDENTIFIED PAIN POINTS</span>'+
         painsHTML+
       '</div>'+
-      '<div>'+
-        '<span class="diag-section-title">EXPECTED BENEFITS</span>'+
-        bensHTML+
-      '</div>'+
+      (bensHTML ? '<div><span class="diag-section-title">EXPECTED BENEFITS</span>'+bensHTML+'</div>' : '')+
       '<div class="diag-form-wrap">'+
         '<div class="diag-form-title">'+formTitle+'</div>'+
         '<div class="diag-form-sub">'+formSub+'</div>'+
@@ -750,8 +776,34 @@ function renderResult(data){
           '<input type="text" id="f-name" placeholder="山田 太郎">'+
         '</div>'+
         '<div class="diag-field">'+
+          '<label>携帯電話<span class="req">*</span></label>'+
+          '<input type="tel" id="f-phone" placeholder="090-0000-0000">'+
+        '</div>'+
+        '<div class="diag-field">'+
           '<label>メールアドレス<span class="req">*</span></label>'+
           '<input type="email" id="f-email" placeholder="your@email.com">'+
+        '</div>'+
+        '<div class="diag-field">'+
+          '<label>第1希望日<span class="req">*</span></label>'+
+          '<input type="date" id="f-date1" min="'+minDate+'">'+
+        '</div>'+
+        '<div class="diag-field">'+
+          '<label>希望時間帯<span class="req">*</span></label>'+
+          '<select id="f-time1">'+
+            '<option value="" disabled selected>時間帯を選択</option>'+
+            '<option value="09:00">09:00〜10:00</option>'+
+            '<option value="10:00">10:00〜11:00</option>'+
+            '<option value="11:00">11:00〜12:00</option>'+
+            '<option value="13:00">13:00〜14:00</option>'+
+            '<option value="14:00">14:00〜15:00</option>'+
+            '<option value="15:00">15:00〜16:00</option>'+
+            '<option value="16:00">16:00〜17:00</option>'+
+            '<option value="17:00">17:00〜18:00</option>'+
+          '</select>'+
+        '</div>'+
+        '<div class="diag-field">'+
+          '<label>第2希望日</label>'+
+          '<input type="date" id="f-date2" min="'+minDate+'">'+
         '</div>'+
         '<div class="diag-field">'+
           '<label>会社名</label>'+
@@ -771,33 +823,55 @@ function renderResult(data){
 // ── Submit booking ──
 function submitBooking(){
   var name    = (document.getElementById('f-name')||{}).value || '';
+  var phone   = (document.getElementById('f-phone')||{}).value || '';
   var email   = (document.getElementById('f-email')||{}).value || '';
+  var date1   = (document.getElementById('f-date1')||{}).value || '';
+  var time1   = (document.getElementById('f-time1')||{}).value || '';
+  var date2   = (document.getElementById('f-date2')||{}).value || '';
   var company = (document.getElementById('f-company')||{}).value || '';
   var role    = (document.getElementById('f-role')||{}).value || '';
 
   if(!name.trim()){ alert('お名前を入力してください。'); return; }
+  if(!phone.trim()){ alert('携帯電話番号を入力してください。'); return; }
   if(!email.trim() || !email.includes('@')){ alert('正しいメールアドレスを入力してください。'); return; }
+  if(!date1){ alert('第1希望日を選択してください。'); return; }
+  if(!time1){ alert('希望時間帯を選択してください。'); return; }
 
   var btn = document.getElementById('diag-submit-btn');
   if(btn){ btn.disabled = true; btn.textContent = '送信中...'; }
 
   var result = window._diagResult || {};
 
+  // date形式: yyyy-mm-dd HH:MM（スラッシュ禁止 §5-1）
+  var dateStr  = date1 + ' ' + time1;
+  var date2Str = date2 || '';
+
+  // answersStr: 文字列型で送信（配列NG §5-1）
+  var answersStr = (window._diagAnswers||[]).map(function(a){
+    return typeof a === 'object' ? (a.text||'') : a;
+  }).join(' / ');
+
   fetch('/api/save-shigyou', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
-      name: name, email: email,
-      company: company, role: role,
-      score: result.score || 0,
-      level: result.level || '-',
-      answers: window._diagAnswers,
-      mode: window._diagMode
+      lp:               window.LP_ID || 'pathflow-partner',
+      name:             name,
+      phone:            phone,
+      email:            email,
+      date:             dateStr,
+      date2:            date2Str,
+      company:          company,
+      role:             role,
+      recommended_menu: result.recommended_menu || '',
+      score:            result.score || 0,
+      level:            result.level || '-',
+      answers:          answersStr,
+      mode:             window._diagMode
     })
   })
   .then(function(r){ return r.json(); })
   .then(function(){
-    // Amplitude booking_complete
     ampTrack('booking_complete', {
       score: result.score, level: result.level,
       mode: window._diagMode
@@ -806,7 +880,6 @@ function submitBooking(){
   })
   .catch(function(err){
     console.error(err);
-    // エラーでも完了画面へ（UX優先）
     ampTrack('booking_complete', { score: result.score, level: result.level, mode: window._diagMode });
     renderComplete(name);
   });
