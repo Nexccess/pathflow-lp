@@ -842,15 +842,13 @@ function submitBooking(){
 
   var result = window._diagResult || {};
 
-  // date形式: yyyy-mm-dd HH:MM（スラッシュ禁止 §5-1）
-  var dateStr  = date1 + ' ' + time1;
-  var date2Str = date2 || '';
-
   // answersStr: 文字列型で送信（配列NG §5-1）
   var answersStr = (window._diagAnswers||[]).map(function(a){
     return typeof a === 'object' ? (a.text||'') : a;
   }).join(' / ');
 
+  // ⚠ save-shigyou.js は date/time を別フィールドで受け取り内部結合する（§5-1）
+  // date = "yyyy-mm-dd" 単体、time = "HH:MM" 単体で渡す
   fetch('/api/save-shigyou', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
@@ -859,8 +857,9 @@ function submitBooking(){
       name:             name,
       phone:            phone,
       email:            email,
-      date:             dateStr,
-      date2:            date2Str,
+      date:             date1,
+      time:             time1,
+      date2:            date2 || '',
       company:          company,
       role:             role,
       recommended_menu: result.recommended_menu || '',
