@@ -15,25 +15,20 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans JP','DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
-/* HEADER */
 .header{
-  background:var(--navy);
-  padding:14px 24px;
+  background:var(--navy);padding:14px 24px;
   display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 12px rgba(0,0,0,.2);
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);
 }
 .header-left{display:flex;align-items:center;gap:14px}
 .header-logo{
-  width:36px;height:36px;background:var(--gold);
-  border-radius:8px;display:flex;align-items:center;justify-content:center;
-  font-size:16px;font-weight:900;color:var(--navy);font-family:'DM Sans',sans-serif;
+  width:36px;height:36px;background:var(--gold);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:var(--navy);
 }
 .header-title{color:var(--white);font-size:15px;font-weight:700}
 .header-sub{color:rgba(255,255,255,.5);font-size:11px;margin-top:1px}
 .header-right{display:flex;align-items:center;gap:12px}
-.header-update{font-size:11px;color:rgba(255,255,255,.4)}
 .btn-refresh{
   background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
   color:var(--white);padding:6px 14px;border-radius:6px;
@@ -45,8 +40,6 @@ body{font-family:'Noto Sans JP','DM Sans',sans-serif;background:var(--bg);color:
   color:var(--gold2);padding:6px 14px;border-radius:6px;
   font-size:12px;font-weight:700;cursor:pointer;
 }
-
-/* LP TABS */
 .lp-tabs{
   background:var(--white);border-bottom:1px solid var(--border);
   padding:0 24px;display:flex;gap:0;overflow-x:auto;
@@ -58,127 +51,68 @@ body{font-family:'Noto Sans JP','DM Sans',sans-serif;background:var(--bg);color:
 }
 .lp-tab.active{color:var(--navy2);border-bottom-color:var(--gold)}
 .lp-tab:hover{color:var(--navy2)}
-.lp-status{
-  display:inline-block;width:6px;height:6px;border-radius:50%;
-  margin-right:6px;margin-bottom:1px;
-}
+.lp-status{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;margin-bottom:1px;}
 .lp-status.live{background:var(--green)}
-.lp-status.staging{background:var(--gold)}
-.lp-status.paused{background:var(--muted)}
-
-/* MAIN */
 .main{padding:20px 24px;max-width:1200px;margin:0 auto}
-
-/* KPI CARDS */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
 @media(max-width:768px){.kpi-grid{grid-template-columns:1fr 1fr}}
 .kpi-card{
   background:var(--white);border-radius:12px;padding:18px 16px;
-  border:1px solid var(--border);
-  box-shadow:0 1px 4px rgba(0,0,0,.05);
+  border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05);
 }
 .kpi-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
-.kpi-value{
-  font-family:'DM Sans',sans-serif;font-size:32px;font-weight:900;
-  color:var(--navy);line-height:1;margin-bottom:4px;
-}
+.kpi-value{font-size:32px;font-weight:900;color:var(--navy);line-height:1;margin-bottom:4px}
 .kpi-sub{font-size:11px;color:var(--muted)}
 .kpi-gold .kpi-value{color:var(--gold)}
 .kpi-green .kpi-value{color:var(--green)}
-
-/* GRID 2COL */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
-
-/* CARD */
 .card{background:var(--white);border-radius:12px;padding:20px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05)}
 .card-title{
   font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
   color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:16px;
 }
 .card-title::before{content:'—';opacity:.5}
-
-/* ACTIVITY FEED */
 .feed-list{display:flex;flex-direction:column;gap:8px}
-.feed-item{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;border-radius:8px;background:var(--bg);
-  font-size:13px;
-}
-.feed-time{font-size:11px;color:var(--muted);white-space:nowrap;min-width:52px}
+.feed-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:var(--bg);font-size:13px;}
 .feed-text{flex:1;color:var(--text)}
-.feed-count{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:900;color:var(--navy);min-width:48px;text-align:right}
-.feed-badge{
-  font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;
-  white-space:nowrap;
-}
+.feed-count{font-size:15px;font-weight:900;color:var(--navy);min-width:48px;text-align:right}
+.feed-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;white-space:nowrap;}
 .badge-diag{background:rgba(25,47,96,.1);color:var(--navy2)}
 .badge-book{background:rgba(90,155,122,.1);color:var(--green)}
 .badge-page{background:rgba(201,168,76,.1);color:var(--gold)}
-.badge-line{background:rgba(6,199,85,.1);color:#06C755}
 .feed-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
 .feed-hint a{color:var(--gold);text-decoration:none}
 .feed-hint a:hover{text-decoration:underline}
-
-/* TABLE */
 .ab-table{width:100%;border-collapse:collapse}
-.ab-table th{
-  font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--muted);padding:8px 12px;text-align:left;
-  border-bottom:1px solid var(--border);
-}
+.ab-table th{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
 .ab-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--bg)}
 .ab-table tr:last-child td{border-bottom:none}
 .badge-current{background:rgba(201,168,76,.15);color:var(--gold);font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px}
-.badge-old{background:var(--bg);color:var(--muted);font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px}
-.conv-rate{font-weight:700;color:var(--gold);font-family:'DM Sans',sans-serif}
-
-/* BAR CHART */
+.conv-rate{font-weight:700;color:var(--gold)}
 .bar-chart{display:flex;flex-direction:column;gap:10px}
 .bar-row{display:flex;align-items:center;gap:10px}
-.bar-label{font-size:12px;color:var(--text);min-width:100px;flex-shrink:0}
+.bar-label{font-size:12px;color:var(--text);min-width:80px;flex-shrink:0}
 .bar-track{flex:1;height:8px;background:var(--bg);border-radius:100px;overflow:hidden}
 .bar-fill{height:100%;background:var(--gold);border-radius:100px;transition:width .6s ease}
 .bar-pct{font-size:12px;font-weight:700;color:var(--gold);min-width:36px;text-align:right}
-
-/* TREND CHART */
 canvas{max-height:180px}
-
-/* LOADING */
 .loading{text-align:center;padding:40px 0;color:var(--muted);font-size:13px}
 .spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ALERTS */
 .alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none}
 .alert.show{display:block}
-.alert-warn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:#7a5a00}
+.alert-info{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);color:#7a5a00;display:block;margin-bottom:14px;}
 .alert-err{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);color:var(--red)}
-
-/* SS LINK */
 .ss-links{display:flex;flex-direction:column;gap:8px}
-.ss-link{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;
-  background:var(--bg);border-radius:8px;text-decoration:none;
-  color:var(--text);font-size:13px;transition:background .2s;
-}
+.ss-link{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:8px;text-decoration:none;color:var(--text);font-size:13px;transition:background .2s;}
 .ss-link:hover{background:var(--border)}
-.ss-icon{font-size:18px}
 .ss-name{flex:1;font-weight:500}
 .ss-sheet{font-size:11px;color:var(--muted)}
-
-/* LP PROPERTY WARNING */
-.lp-warn{
-  background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);
-  border-radius:8px;padding:10px 14px;font-size:12px;color:#7a5a00;
-  margin-bottom:14px;display:none;
-}
-.lp-warn.show{display:block}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-left">
     <div class="header-logo">Nx</div>
@@ -193,20 +127,17 @@ canvas{max-height:180px}
   </div>
 </div>
 
-<!-- LP TABS -->
 <div class="lp-tabs" id="lpTabs"></div>
 
-<!-- MAIN -->
 <div class="main">
-  <div class="alert alert-warn" id="alertWarn"></div>
-  <div class="alert alert-err"  id="alertErr"></div>
-  <div class="lp-warn" id="lpWarn">
-    ⚠ <strong>トラッキング設定の確認が必要です：</strong>
-    各サイトの解析タグに <code>event_properties.lp</code> が未設定の可能性があります。
-    ALL の集計は正常ですが、LP 別内訳が 0 になっています。
+
+  <!-- LP別内訳未対応の案内（常時表示） -->
+  <div class="alert-info">
+    ℹ LP別内訳は現在準備中です。各サイトのトラッキングタグに <code>event_properties.lp</code> を追加後、有効化されます。現在は全サイト合算値を表示しています。
   </div>
 
-  <!-- KPI -->
+  <div class="alert alert-err" id="alertErr"></div>
+
   <div class="kpi-grid">
     <div class="kpi-card">
       <div class="kpi-label">ページビュー</div>
@@ -231,15 +162,12 @@ canvas{max-height:180px}
   </div>
 
   <div class="grid-2">
-    <!-- Activity Feed → 今月の実績サマリー -->
     <div class="card">
       <div class="card-title">ACTIVITY FEED — 今月の実績サマリー</div>
       <div class="feed-list" id="feedList">
         <div class="loading"><span class="spinner"></span>読み込み中...</div>
       </div>
     </div>
-
-    <!-- Trend Chart -->
     <div class="card">
       <div class="card-title">TREND — 週別 PV</div>
       <canvas id="trendChart"></canvas>
@@ -247,28 +175,21 @@ canvas{max-height:180px}
   </div>
 
   <div class="grid-2">
-    <!-- Top Events -->
     <div class="card">
       <div class="card-title">TOP EVENTS — AMPLITUDE</div>
       <div id="topEvents"><div class="loading"><span class="spinner"></span>読み込み中...</div></div>
     </div>
-
-    <!-- FCB Click Map -->
     <div class="card">
       <div class="card-title">FCB CLICK MAP — ボタン別タップ率</div>
       <div class="bar-chart" id="clickMap"></div>
     </div>
   </div>
 
-  <!-- A/B LP Performance -->
   <div class="card" style="margin-bottom:14px">
     <div class="card-title">A/B TEST — LP別パフォーマンス</div>
     <table class="ab-table">
       <thead>
-        <tr>
-          <th>LP VARIANT</th><th>PV</th><th>診断タップ</th>
-          <th>予約完了</th><th>転換率</th>
-        </tr>
+        <tr><th>LP VARIANT</th><th>PV</th><th>診断タップ</th><th>予約完了</th><th>転換率</th></tr>
       </thead>
       <tbody id="abTable">
         <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">読み込み中...</td></tr>
@@ -276,75 +197,50 @@ canvas{max-height:180px}
     </table>
   </div>
 
-  <!-- SS Links -->
   <div class="card" style="margin-bottom:14px">
     <div class="card-title">SPREADSHEETS — データ蓄積先</div>
     <div class="ss-links">
       <a href="https://docs.google.com/spreadsheets/d/1IbDCONo1MFJZlnTjeEPicRVF5ULrdSPt2EGpVdsL2XE" target="_blank" class="ss-link">
-        <span class="ss-icon">📊</span>
-        <span class="ss-name">Path-Flow_AI診断結果</span>
+        <span>📊</span><span class="ss-name">Path-Flow_AI診断結果</span>
         <span class="ss-sheet">AI診断結果 | main.pathflow.org</span>
       </a>
       <a href="https://docs.google.com/spreadsheets/d/1lN54su98k_rhiB43G10cqUzQsY-34sKesxq4sZInKuM" target="_blank" class="ss-link">
-        <span class="ss-icon">📊</span>
-        <span class="ss-name">Path-Flow_2号機_士業DX診断</span>
+        <span>📊</span><span class="ss-name">Path-Flow_2号機_士業DX診断</span>
         <span class="ss-sheet">士業DX診断結果 | shigyo.pathflow.org</span>
       </a>
       <a href="https://docs.google.com/spreadsheets/d/1tKFUNvctedMI-kBqpLP49Gwnh1Df05UgGCOOBZg2F74" target="_blank" class="ss-link">
-        <span class="ss-icon">📊</span>
-        <span class="ss-name">スコアリング結果</span>
+        <span>📊</span><span class="ss-name">スコアリング結果</span>
         <span class="ss-sheet">スコアリング結果 | seisakukinyukouko.site</span>
       </a>
       <a href="https://docs.google.com/spreadsheets/d/1Yedly5_vjNiGWhBNgjE8IEzcrlWxnb6myX7-utkOpck" target="_blank" class="ss-link">
-        <span class="ss-icon">📊</span>
-        <span class="ss-name">AI診断結果（製作金融）</span>
+        <span>📊</span><span class="ss-name">AI診断結果（製作金融）</span>
         <span class="ss-sheet">診断結果 | seisakukinyukouko.site</span>
       </a>
     </div>
   </div>
 
-</div><!-- /main -->
+</div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════
    LP 設定
-   ⚠ LP の ID は各サイトの Amplitude トラッキングタグで送信する
-     event_properties.lp の値と完全一致させること。
-   ⚠ 新サイト追加時は api/amplitude-feed.js の LP_IDS にも同じ ID を追記。
-═══════════════════════════════════════════════════════════════ */
+   新サイト追加: LP_LIST に追記 + api/amplitude-feed.js の LP_IDS にも追記
+═══════════════════════════════════════ */
 const LP_LIST = [
-  { id: 'ALL',         label: 'ALL（合算）',     url: '',                                    variant: '合算',        status: 'live' },
-  { id: 'pathflow-v1', label: 'Path-Flow Main',  url: 'https://main.pathflow.org/',          variant: 'v1（稼働中）', status: 'live' },
-  { id: 'shigyo-v1',   label: 'Shigyo（士業）',  url: 'https://shigyo.pathflow.org/',        variant: 'v1（稼働中）', status: 'live' },
-  { id: 'seisaku-v1',  label: '製作金融',         url: 'https://www.seisakukinyukouko.site/', variant: 'v1（稼働中）', status: 'live' },
+  { id:'ALL',         label:'ALL（合算）',    url:'',                                     variant:'合算',        status:'live' },
+  { id:'pathflow-v1', label:'Path-Flow Main', url:'https://main.pathflow.org/',           variant:'v1（稼働中）', status:'live' },
+  { id:'shigyo-v1',   label:'Shigyo（士業）', url:'https://shigyo.pathflow.org/',         variant:'v1（稼働中）', status:'live' },
+  { id:'seisaku-v1',  label:'製作金融',        url:'https://www.seisakukinyukouko.site/', variant:'v1（稼働中）', status:'live' },
 ];
-
-// Amplitude tracking key（イベント送信用）
-const AMP_TRACKING_KEY = '8d3b5be866c4740fa6c83949f85ce25e';
 
 let currentLP  = 'ALL';
 let trendChart = null;
 let isMock     = false;
+let _cache     = null;
 
-/* ─── Amplitude SDK（送信専用） ─── */
-const ampScript = document.createElement('script');
-ampScript.src = 'https://cdn.amplitude.com/libs/analytics-browser-2.3.1-min.js.gz';
-ampScript.onload = () => { amplitude.init(AMP_TRACKING_KEY, { defaultTracking: false }); };
-document.head.appendChild(ampScript);
-
-/* ─── Auto-refresh（0/4/8/12/16/20 時） ─── */
-function scheduleRefresh() {
-  const now  = new Date();
-  const h    = now.getHours();
-  const next = [0,4,8,12,16,20].find(t => t > h) ?? 24;
-  const msec = ((next - h) * 60 - now.getMinutes()) * 60000 - now.getSeconds() * 1000;
-  setTimeout(() => { loadAll(); scheduleRefresh(); }, msec);
-}
-
-/* ─── LP Tabs ─── */
+/* ─── タブ構築 ─── */
 function buildTabs() {
-  const el = document.getElementById('lpTabs');
-  el.innerHTML = LP_LIST.map(lp =>
+  document.getElementById('lpTabs').innerHTML = LP_LIST.map(lp =>
     `<div class="lp-tab${lp.id === currentLP ? ' active' : ''}" onclick="switchLP('${lp.id}')">
       <span class="lp-status ${lp.status}"></span>${lp.label}
     </div>`
@@ -354,40 +250,25 @@ function buildTabs() {
 function switchLP(id) {
   currentLP = id;
   buildTabs();
-  if (isMock) {
-    renderFromCache();
-  } else {
-    loadAll();
-  }
+  if (_cache) renderFromCache();
+  else loadAll();
 }
 
-/* キャッシュ（モック切り替え用） */
-let _cachedData = null;
-
-/* ─── Fetch /api/amplitude-feed ─── */
+/* ─── API fetch ─── */
 async function fetchFeed() {
   const r = await fetch('/api/amplitude-feed');
   const body = await r.json().catch(() => ({}));
-  if (!r.ok) {
-    throw new Error(body.error || `HTTP ${r.status}`);
-  }
+  if (!r.ok) throw new Error(body.error || `HTTP ${r.status}`);
   return body;
 }
 
-/* ─── Load All ─── */
+/* ─── データ読込 ─── */
 async function loadAll() {
   if (isMock) return;
   document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ja-JP');
-
+  clearErr();
   try {
-    const data   = await fetchFeed();
-    _cachedData  = data;
-    clearErr();
-
-    // lp プロパティ未設定の警告
-    const meta = data._meta || {};
-    document.getElementById('lpWarn').classList.toggle('show', !!meta.lpPropertyMissing);
-
+    _cache = await fetchFeed();
     renderFromCache();
   } catch (e) {
     showErr(e.message);
@@ -395,82 +276,79 @@ async function loadAll() {
 }
 
 function renderFromCache() {
-  if (!_cachedData) return;
-  const kpi    = _cachedData.kpi?.[currentLP]    ?? { pv:0, diag:0, book:0, line:0 };
-  const weekly = _cachedData.weekly?.[currentLP] ?? [0,0,0,0,0];
-  renderAll(kpi, weekly, _cachedData);
+  if (!_cache) return;
+  // タブに関わらず全て合算値を表示（LP別内訳は未実装）
+  const kpi    = _cache.kpi?.['ALL']    ?? { pv:0, diag:0, book:0 };
+  const weekly = _cache.weekly?.['ALL'] ?? [0,0,0,0,0];
+  renderAll(kpi, weekly);
 }
 
-/* ─── Render All ─── */
-function renderAll(kpi, weekly, allData) {
-  const { pv, diag, book, line } = kpi;
+/* ─── 描画 ─── */
+function renderAll(kpi, weekly) {
+  const { pv, diag, book } = kpi;
   const rate = pv > 0 ? Math.round(diag / pv * 100) : 0;
 
-  // ── KPI Cards ──
   document.getElementById('kpiPV').textContent   = pv.toLocaleString();
   document.getElementById('kpiDiag').textContent = diag.toLocaleString();
   document.getElementById('kpiRate').textContent = rate + '%';
   document.getElementById('kpiBook').textContent = book.toLocaleString();
 
-  // ── Activity Feed（集計サマリー）──
-  const evSummary = [
-    { label: 'ページビュー',     val: pv,   badge: 'PV',   cls: 'badge-page' },
-    { label: 'AI診断タップ',     val: diag, badge: 'DIAG', cls: 'badge-diag' },
-    { label: '予約完了',         val: book, badge: 'BOOK', cls: 'badge-book' },
-    { label: 'LINE 相談クリック', val: line, badge: 'LINE', cls: 'badge-line' },
+  // Activity Feed
+  const ev = [
+    { label:'ページビュー',  val:pv,   badge:'PV',   cls:'badge-page' },
+    { label:'AI診断タップ',  val:diag, badge:'DIAG', cls:'badge-diag' },
+    { label:'予約完了',      val:book, badge:'BOOK', cls:'badge-book' },
   ];
   document.getElementById('feedList').innerHTML =
-    evSummary.map(r =>
+    ev.map(r =>
       `<div class="feed-item">
         <span class="feed-badge ${r.cls}">${r.badge}</span>
         <span class="feed-text">${r.label}</span>
         <span class="feed-count">${r.val.toLocaleString()}</span>
       </div>`
     ).join('') +
-    `<div class="feed-hint">
-      リアルタイムフィードは
-      <a href="https://app.amplitude.com/analytics/bitter-shadow-661657" target="_blank">Amplitude Dashboard</a>
-      でご確認ください
-    </div>`;
+    `<div class="feed-hint">リアルタイムは
+      <a href="https://app.amplitude.com/analytics/bitter-shadow-661657" target="_blank">Amplitude</a>
+      でご確認ください</div>`;
 
-  // ── Trend Chart ──
+  // Trend
   renderTrend(weekly);
 
-  // ── Top Events ──
-  const evMap = [
-    ['page_view',        pv],
-    ['diagnosis_click',  diag],
-    ['booking_complete', book],
-    ['fcb_click_line',   line],
-  ].filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
-
+  // Top Events
+  const evMap = [['page_view',pv],['diagnosis_click',diag],['booking_complete',book]]
+    .filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
   document.getElementById('topEvents').innerHTML = evMap.length === 0
     ? '<div class="loading">データなし（今月の集計がまだありません）</div>'
-    : `<table class="ab-table">
-        <thead><tr><th>イベント名</th><th>回数</th></tr></thead>
-        <tbody>
-          ${evMap.map(([k, v]) =>
-            `<tr><td>${k}</td><td><strong>${v.toLocaleString()}</strong></td></tr>`
-          ).join('')}
-        </tbody>
-      </table>`;
+    : `<table class="ab-table"><thead><tr><th>イベント名</th><th>回数</th></tr></thead><tbody>
+        ${evMap.map(([k,v])=>`<tr><td>${k}</td><td><strong>${v.toLocaleString()}</strong></td></tr>`).join('')}
+      </tbody></table>`;
 
-  // ── FCB Click Map ──
-  const clicks  = { 'LINE 相談': line, 'AI診断': diag, '予約完了': book };
-  const maxC    = Math.max(...Object.values(clicks), 1);
+  // FCB Click Map
+  const clicks = { 'AI診断':diag, '予約完了':book };
+  const maxC   = Math.max(...Object.values(clicks), 1);
   document.getElementById('clickMap').innerHTML =
-    Object.entries(clicks).map(([k, v]) =>
+    Object.entries(clicks).map(([k,v]) =>
       `<div class="bar-row">
         <span class="bar-label">${k}</span>
-        <div class="bar-track">
-          <div class="bar-fill" style="width:${Math.round(v / maxC * 100)}%"></div>
-        </div>
-        <span class="bar-pct">${pv > 0 ? Math.round(v / pv * 100) : 0}%</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxC*100)}%"></div></div>
+        <span class="bar-pct">${pv>0?Math.round(v/pv*100):0}%</span>
       </div>`
     ).join('');
 
-  // ── A/B Table ──
-  renderABTable(allData);
+  // A/B Table — LP別内訳未実装のため合算値で表示
+  document.getElementById('abTable').innerHTML = LP_LIST.filter(lp=>lp.id!=='ALL').map(lp => {
+    const rate = pv > 0 ? (book/pv*100).toFixed(1) : '0.0';
+    return `<tr>
+      <td>
+        ${lp.url?`<a href="${lp.url}" target="_blank" style="color:var(--navy2);text-decoration:none">${lp.label}</a>`:lp.label}
+        <span class="badge-current">${lp.variant}</span>
+      </td>
+      <td>${pv.toLocaleString()}</td>
+      <td>${diag.toLocaleString()}</td>
+      <td>${book.toLocaleString()}</td>
+      <td class="conv-rate">${rate}%</td>
+    </tr>`;
+  }).join('');
 }
 
 /* ─── Trend Chart ─── */
@@ -481,47 +359,24 @@ function renderTrend(weekly) {
     type: 'bar',
     data: {
       labels: ['4週前','3週前','2週前','先週','今週'],
-      datasets: [{
+      datasets:[{
         data: weekly,
-        backgroundColor: 'rgba(201,168,76,.6)',
-        borderColor: 'rgba(201,168,76,1)',
-        borderWidth: 1,
-        borderRadius: 4,
+        backgroundColor:'rgba(201,168,76,.6)',
+        borderColor:'rgba(201,168,76,1)',
+        borderWidth:1,borderRadius:4,
       }],
     },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { font: { size: 10 } } },
-        x: { ticks: { font: { size: 10 } } },
+    options:{
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true,ticks:{font:{size:10}}},
+        x:{ticks:{font:{size:10}}},
       },
     },
   });
 }
 
-/* ─── A/B Table ─── */
-function renderABTable(allData) {
-  const rows = LP_LIST.filter(lp => lp.id !== 'ALL').map(lp => {
-    const k    = allData?.kpi?.[lp.id] ?? { pv: 0, diag: 0, book: 0 };
-    const rate = k.pv > 0 ? (k.book / k.pv * 100).toFixed(1) : '0.0';
-    return `<tr>
-      <td>
-        ${lp.url
-          ? `<a href="${lp.url}" target="_blank" style="color:var(--navy2);text-decoration:none">${lp.label}</a>`
-          : lp.label
-        }
-        <span class="${lp.status === 'live' ? 'badge-current' : 'badge-old'}">${lp.variant}</span>
-      </td>
-      <td>${k.pv.toLocaleString()}</td>
-      <td>${k.diag.toLocaleString()}</td>
-      <td>${k.book.toLocaleString()}</td>
-      <td class="conv-rate">${rate}%</td>
-    </tr>`;
-  });
-  document.getElementById('abTable').innerHTML = rows.join('');
-}
-
-/* ─── エラー表示 ─── */
+/* ─── エラー ─── */
 function showErr(msg) {
   const el = document.getElementById('alertErr');
   el.innerHTML = `⚠ ${msg}`;
@@ -531,53 +386,40 @@ function clearErr() {
   document.getElementById('alertErr').classList.remove('show');
 }
 
-/* ─── リセット＆リロード ─── */
+/* ─── リセット ─── */
 function resetAndLoad() {
   isMock = false;
-  _cachedData = null;
+  _cache = null;
   loadAll();
 }
 
-/* ─── Mock Data ─── */
+/* ─── Mock ─── */
 function loadMock() {
   isMock = true;
   document.getElementById('lastUpdate').textContent =
     new Date().toLocaleTimeString('ja-JP') + ' (MOCK)';
   clearErr();
-  document.getElementById('lpWarn').classList.remove('show');
-
-  const lpIds = LP_LIST.filter(l => l.id !== 'ALL').map(l => l.id);
-  const mockKpi = {};
-
-  lpIds.forEach(id => {
-    const pv   = Math.floor(Math.random() * 600 + 100);
-    const diag = Math.floor(pv * (Math.random() * 0.3 + 0.1));
-    const book = Math.floor(diag * (Math.random() * 0.2 + 0.05));
-    const line = Math.floor(pv * (Math.random() * 0.1 + 0.02));
-    mockKpi[id] = { pv, diag, book, line };
-  });
-
-  mockKpi.ALL = lpIds.reduce(
-    (acc, id) => ({
-      pv:   acc.pv   + mockKpi[id].pv,
-      diag: acc.diag + mockKpi[id].diag,
-      book: acc.book + mockKpi[id].book,
-      line: acc.line + mockKpi[id].line,
-    }),
-    { pv: 0, diag: 0, book: 0, line: 0 }
-  );
-
-  const mockWeekly = { ALL: [0, 0, 0, 0, 0] };
-  lpIds.forEach(id => {
-    mockWeekly[id] = Array.from({ length: 5 }, () => Math.floor(Math.random() * 100 + 10));
-    for (let i = 0; i < 5; i++) mockWeekly.ALL[i] += mockWeekly[id][i];
-  });
-
-  _cachedData = { kpi: mockKpi, weekly: mockWeekly };
+  const pv   = Math.floor(Math.random() * 800 + 200);
+  const diag = Math.floor(pv * (Math.random() * 0.3 + 0.1));
+  const book = Math.floor(diag * (Math.random() * 0.2 + 0.05));
+  const kpi  = { pv, diag, book };
+  const weekly = Array.from({length:5}, () => Math.floor(Math.random()*150+20));
+  _cache = {
+    kpi:    { ALL:kpi, 'pathflow-v1':kpi, 'shigyo-v1':kpi, 'seisaku-v1':kpi },
+    weekly: { ALL:weekly, 'pathflow-v1':weekly, 'shigyo-v1':weekly, 'seisaku-v1':weekly },
+  };
   renderFromCache();
 }
 
-/* ─── Init ─── */
+/* ─── 定時更新（4時間ごと） ─── */
+function scheduleRefresh() {
+  const now  = new Date();
+  const h    = now.getHours();
+  const next = [0,4,8,12,16,20].find(t => t > h) ?? 24;
+  const ms   = ((next - h) * 60 - now.getMinutes()) * 60000;
+  setTimeout(() => { loadAll(); scheduleRefresh(); }, ms);
+}
+
 buildTabs();
 loadAll();
 scheduleRefresh();
