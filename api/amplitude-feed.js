@@ -2,10 +2,12 @@
  * api/amplitude-feed.js
  * Vercel Edge Function — Amplitude Dashboard REST API v2
  *
- * 現在の実装: グループ集計なし（全サイト合算のみ）
- * LP別内訳を表示するには、各LPのトラッキングタグで
- * event_properties.lp = 'pathflow-v1' 等を送信する必要がある。
- * その実装完了後に本ファイルを更新すること。
+ * 確認済み LP_ID（各サイトのHTMLソースより）:
+ *   pathflow-v1  … main.pathflow.org
+ *   shigyou-v1   … shigyo.pathflow.org  ※ "u" あり
+ *   seisaku-v1   … seisakukinyukouko-pathflow.vercel.app
+ *
+ * 新サイト追加: LP_IDS に追記 + admin.html の LP_LIST にも追記
  *
  * 必須 Vercel 環境変数:
  *   AMPLITUDE_API_KEY    … Project API Key
@@ -13,6 +15,12 @@
  */
 
 export const config = { runtime: 'edge' };
+
+const LP_IDS = [
+  'pathflow-v1',  // main.pathflow.org
+  'shigyou-v1',   // shigyo.pathflow.org  ※ "u" あり
+  'seisaku-v1',   // seisakukinyukouko-pathflow.vercel.app
+];
 
 function fmtDate(d) {
   return (
@@ -22,17 +30,16 @@ function fmtDate(d) {
   );
 }
 
-/**
- * Amplitude Event Segmentation API — グループなし
- * 返値: { data: { series: [[n,n,...]], xValues: ['YYYY-MM-DD',...] } }
- */
-async function ampSegment(auth, eventType, start, end, interval) {
+async function ampSegment(auth, eventType, start, end, interval, groupProp = null) {
   const url = new URL('https://amplitude.com/api/2/events/segmentation');
   url.searchParams.set('e', JSON.stringify({ event_type: eventType }));
   url.searchParams.set('m', 'totals');
   url.searchParams.set('start', start);
   url.searchParams.set('end', end);
   url.searchParams.set('i', String(interval));
+  if (groupProp) {
+    url.searchParams.set('g', JSON.stringify({ type: 'event', value: groupProp }));
+  }
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8000);
@@ -43,9 +50,8 @@ async function ampSegment(auth, eventType, start, end, interval) {
       signal: controller.signal,
     });
     clearTimeout(timer);
-
     if (res.status === 401 || res.status === 403) {
-      throw new Error(`Amplitude 認証エラー (${res.status}) — API_KEY / SECRET_KEY を確認してください`);
+      throw new Error(`Amplitude 認証エラー (${res.status})`);
     }
     if (!res.ok) {
       const body = await res.text().catch(() => '');
@@ -59,20 +65,38 @@ async function ampSegment(auth, eventType, start, end, interval) {
   }
 }
 
-/** series[0] の合計値を返す */
-function sumSeries(raw) {
-  const vals = raw?.data?.series?.[0];
-  if (!Array.isArray(vals)) return 0;
-  return vals.reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
+function extractGroupedTotals(raw, lpIds) {
+  const out = { ALL: 0 };
+  lpIds.forEach(id => (out[id] = 0));
+  const series = raw?.data?.series ?? [];
+  const labels = raw?.data?.seriesLabels ?? [];
+  series.forEach((vals, i) => {
+    const v = Array.isArray(vals)
+      ? vals.reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0)
+      : 0;
+    const lbl = String(labels[i] ?? '');
+    out.ALL += v;
+    if (Object.prototype.hasOwnProperty.call(out, lbl)) out[lbl] += v;
+  });
+  return out;
 }
 
-/** 直近 n 週分の週次集計値を返す（interval=7 のレスポンス想定） */
-function weeklySlice(raw, n = 5) {
-  const vals = raw?.data?.series?.[0];
-  if (!Array.isArray(vals)) return Array(n).fill(0);
-  const sliced = vals.slice(-n);
-  while (sliced.length < n) sliced.unshift(0);
-  return sliced;
+function extractGroupedWeekly(raw, lpIds) {
+  const out = { ALL: [0, 0, 0, 0, 0] };
+  lpIds.forEach(id => (out[id] = [0, 0, 0, 0, 0]));
+  const series = raw?.data?.series ?? [];
+  const labels = raw?.data?.seriesLabels ?? [];
+  series.forEach((vals, i) => {
+    const arr = Array.isArray(vals) ? vals.map(v => (typeof v === 'number' ? v : 0)) : [];
+    const w = arr.slice(-5);
+    while (w.length < 5) w.unshift(0);
+    const lbl = String(labels[i] ?? '');
+    for (let j = 0; j < 5; j++) {
+      out.ALL[j] += w[j];
+      if (Object.prototype.hasOwnProperty.call(out, lbl)) out[lbl][j] += w[j];
+    }
+  });
+  return out;
 }
 
 export default async function handler(req) {
@@ -87,9 +111,7 @@ export default async function handler(req) {
 
   if (!API_KEY || !SECRET_KEY) {
     return new Response(
-      JSON.stringify({
-        error: 'AMPLITUDE_API_KEY または AMPLITUDE_SECRET_KEY が未設定です。Vercel → Settings → Environment Variables を確認してください。',
-      }),
+      JSON.stringify({ error: 'AMPLITUDE_API_KEY または AMPLITUDE_SECRET_KEY が未設定です。' }),
       { status: 500, headers }
     );
   }
@@ -101,11 +123,12 @@ export default async function handler(req) {
   const monthStart = fmtDate(new Date(now.getFullYear(), now.getMonth(), 1));
   const weekStart  = fmtDate(new Date(now.getTime() - 34 * 86400 * 1000));
 
+  // グループ集計（lp プロパティ）で4コール並列実行
   const [pvRes, diagRes, bookRes, weeklyRes] = await Promise.allSettled([
-    ampSegment(auth, 'page_view',        monthStart, today, 1),
-    ampSegment(auth, 'diagnosis_click',  monthStart, today, 1),
-    ampSegment(auth, 'booking_complete', monthStart, today, 1),
-    ampSegment(auth, 'page_view',        weekStart,  today, 7),
+    ampSegment(auth, 'page_view',        monthStart, today, 1, 'lp'),
+    ampSegment(auth, 'diagnosis_click',  monthStart, today, 1, 'lp'),
+    ampSegment(auth, 'booking_complete', monthStart, today, 1, 'lp'),
+    ampSegment(auth, 'page_view',        weekStart,  today, 7, 'lp'),
   ]);
 
   const errors = [pvRes, diagRes, bookRes, weeklyRes]
@@ -118,30 +141,27 @@ export default async function handler(req) {
 
   const safe = r => (r.status === 'fulfilled' ? r.value : null);
 
-  const pv   = sumSeries(safe(pvRes));
-  const diag = sumSeries(safe(diagRes));
-  const book = sumSeries(safe(bookRes));
-  const weekly = weeklySlice(safe(weeklyRes));
+  const pvTotals   = extractGroupedTotals(safe(pvRes),    LP_IDS);
+  const diagTotals = extractGroupedTotals(safe(diagRes),  LP_IDS);
+  const bookTotals = extractGroupedTotals(safe(bookRes),  LP_IDS);
+  const weekly     = extractGroupedWeekly(safe(weeklyRes), LP_IDS);
 
-  // LP別内訳は未実装のため全て全体値を返す
-  // （各LPタブで同一の合算値を表示する仕様）
-  const LP_IDS = ['pathflow-v1', 'shigyo-v1', 'seisaku-v1'];
-  const kpiAll = { pv, diag, book };
-  const kpi = { ALL: kpiAll };
-  LP_IDS.forEach(id => { kpi[id] = kpiAll; });
-
-  const weeklyAll = { ALL: weekly };
-  LP_IDS.forEach(id => { weeklyAll[id] = weekly; });
+  const kpi = {};
+  ['ALL', ...LP_IDS].forEach(lp => {
+    kpi[lp] = {
+      pv:   pvTotals[lp]   ?? 0,
+      diag: diagTotals[lp] ?? 0,
+      book: bookTotals[lp] ?? 0,
+    };
+  });
 
   return new Response(
     JSON.stringify({
       kpi,
-      weekly: weeklyAll,
+      weekly,
       _meta: {
         lpIds: LP_IDS,
         generatedAt: new Date().toISOString(),
-        lpBreakdownAvailable: false,
-        note: 'LP別内訳はevent_properties.lpの実装後に有効化されます',
         errors: errors.length > 0 ? errors : null,
       },
     }),
