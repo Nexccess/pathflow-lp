@@ -131,10 +131,7 @@ canvas{max-height:180px}
 
 <div class="main">
 
-  <!-- LP別内訳未対応の案内（常時表示） -->
-  <div class="alert-info">
-    ℹ LP別内訳は現在準備中です。各サイトのトラッキングタグに <code>event_properties.lp</code> を追加後、有効化されます。現在は全サイト合算値を表示しています。
-  </div>
+
 
   <div class="alert alert-err" id="alertErr"></div>
 
@@ -229,7 +226,7 @@ canvas{max-height:180px}
 const LP_LIST = [
   { id:'ALL',         label:'ALL（合算）',    url:'',                                     variant:'合算',        status:'live' },
   { id:'pathflow-v1', label:'Path-Flow Main', url:'https://main.pathflow.org/',           variant:'v1（稼働中）', status:'live' },
-  { id:'shigyo-v1',   label:'Shigyo（士業）', url:'https://shigyo.pathflow.org/',         variant:'v1（稼働中）', status:'live' },
+  { id:'shigyou-v1',   label:'Shigyo（士業）', url:'https://shigyo.pathflow.org/',         variant:'v1（稼働中）', status:'live' },
   { id:'seisaku-v1',  label:'製作金融',        url:'https://www.seisakukinyukouko.site/', variant:'v1（稼働中）', status:'live' },
 ];
 
@@ -277,9 +274,9 @@ async function loadAll() {
 
 function renderFromCache() {
   if (!_cache) return;
-  // タブに関わらず全て合算値を表示（LP別内訳は未実装）
-  const kpi    = _cache.kpi?.['ALL']    ?? { pv:0, diag:0, book:0 };
-  const weekly = _cache.weekly?.['ALL'] ?? [0,0,0,0,0];
+  // タブ選択に応じてLP別データを表示
+  const kpi    = _cache.kpi?.[currentLP]    ?? { pv:0, diag:0, book:0 };
+  const weekly = _cache.weekly?.[currentLP] ?? [0,0,0,0,0];
   renderAll(kpi, weekly);
 }
 
@@ -335,17 +332,18 @@ function renderAll(kpi, weekly) {
       </div>`
     ).join('');
 
-  // A/B Table — LP別内訳未実装のため合算値で表示
+  // A/B Table — LP別内訳（lp プロパティ実装済み）
   document.getElementById('abTable').innerHTML = LP_LIST.filter(lp=>lp.id!=='ALL').map(lp => {
-    const rate = pv > 0 ? (book/pv*100).toFixed(1) : '0.0';
+    const k    = _cache?.kpi?.[lp.id] ?? { pv:0, diag:0, book:0 };
+    const rate = k.pv > 0 ? (k.book/k.pv*100).toFixed(1) : '0.0';
     return `<tr>
       <td>
         ${lp.url?`<a href="${lp.url}" target="_blank" style="color:var(--navy2);text-decoration:none">${lp.label}</a>`:lp.label}
         <span class="badge-current">${lp.variant}</span>
       </td>
-      <td>${pv.toLocaleString()}</td>
-      <td>${diag.toLocaleString()}</td>
-      <td>${book.toLocaleString()}</td>
+      <td>${k.pv.toLocaleString()}</td>
+      <td>${k.diag.toLocaleString()}</td>
+      <td>${k.book.toLocaleString()}</td>
       <td class="conv-rate">${rate}%</td>
     </tr>`;
   }).join('');
@@ -405,8 +403,8 @@ function loadMock() {
   const kpi  = { pv, diag, book };
   const weekly = Array.from({length:5}, () => Math.floor(Math.random()*150+20));
   _cache = {
-    kpi:    { ALL:kpi, 'pathflow-v1':kpi, 'shigyo-v1':kpi, 'seisaku-v1':kpi },
-    weekly: { ALL:weekly, 'pathflow-v1':weekly, 'shigyo-v1':weekly, 'seisaku-v1':weekly },
+    kpi:    { ALL:kpi, 'pathflow-v1':kpi, 'shigyou-v1':kpi, 'seisaku-v1':kpi },
+    weekly: { ALL:weekly, 'pathflow-v1':weekly, 'shigyou-v1':weekly, 'seisaku-v1':weekly },
   };
   renderFromCache();
 }
