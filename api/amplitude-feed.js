@@ -2,8 +2,20 @@
  * api/amplitude-feed.js
  * Vercel Edge Function — Amplitude Dashboard REST API v2
  *
- * LP別内訳: Amplitude API制約（並列429・フィルター400）により取得不可
- * → 3クエリを順次実行し、全タブで合算値を表示
+ * 方式: LP_ID ごとに逐次APIコール → サーバー側で集計
+ * フィルター: e= パラメータ内の filters フィールド（正規仕様）
+ * 間隔: 300ms（429対策）
+ *
+ * タブ集計定義:
+ *   ALL         = 全LP合算
+ *   pathflow    = pathflow-v1 + pathflow-v2 + pathflow-main + pathflow-partner
+ *   shigyo      = shigyo-v1 + shigyou-v1
+ *   seisaku     = seisaku-v1
+ *
+ * 新サイト追加:
+ *   1. LP_DEFS に LP_ID を追記
+ *   2. TABS の該当グループに LP_ID を追記
+ *   3. admin.html の LP_LIST に同じグループIDで追記
  *
  * 必須 Vercel 環境変数:
  *   AMPLITUDE_API_KEY
@@ -12,7 +24,23 @@
 
 export const config = { runtime: 'edge' };
 
-const LP_IDS = ['pathflow-v1', 'shigyou-v1', 'seisaku-v1'];
+// Amplitude に登録済みの event property "lp" の値
+const LP_DEFS = [
+  'pathflow-v1',
+  'pathflow-v2',
+  'pathflow-main',
+  'pathflow-partner',
+  'shigyo-v1',
+  'shigyou-v1',
+  'seisaku-v1',
+];
+
+// タブ → LP_ID の集計グループ定義
+const TABS = {
+  'pathflow-v1': ['pathflow-v1', 'pathflow-v2', 'pathflow-main', 'pathflow-partner'],
+  'shigyou-v1':  ['shigyo-v1', 'shigyou-v1'],
+  'seisaku-v1':  ['seisaku-v1'],
+};
 
 function fmtDate(d) {
   return d.getFullYear().toString()
@@ -20,10 +48,25 @@ function fmtDate(d) {
     + String(d.getDate()).padStart(2, '0');
 }
 
-// 順次実行（並列429対策）
-async function ampFetch(auth, eventType, start, end, interval) {
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+/**
+ * Amplitude Event Segmentation API
+ * lpId 指定時: e= 内の filters で event property "lp" を絞り込み（正規形式）
+ */
+async function ampFetch(auth, eventType, start, end, interval, lpId = null) {
+  const eventDef = { event_type: eventType };
+  if (lpId) {
+    eventDef.filters = [{
+      subprop_type:  'event',
+      subprop_key:   'lp',
+      subprop_op:    'is',
+      subprop_value: [lpId],
+    }];
+  }
+
   const url = new URL('https://amplitude.com/api/2/events/segmentation');
-  url.searchParams.set('e', JSON.stringify({ event_type: eventType }));
+  url.searchParams.set('e', JSON.stringify(eventDef));
   url.searchParams.set('m', 'totals');
   url.searchParams.set('start', start);
   url.searchParams.set('end', end);
@@ -39,17 +82,15 @@ async function ampFetch(auth, eventType, start, end, interval) {
     clearTimeout(t);
     if (!res.ok) {
       const body = await res.text().catch(() => '');
-      throw new Error(`${res.status} (${eventType}): ${body.slice(0, 150)}`);
+      throw new Error(`${res.status} (${eventType}/${lpId ?? 'ALL'}): ${body.slice(0, 150)}`);
     }
     return await res.json();
   } catch (e) {
     clearTimeout(t);
-    if (e.name === 'AbortError') throw new Error(`タイムアウト (${eventType})`);
+    if (e.name === 'AbortError') throw new Error(`タイムアウト (${eventType}/${lpId ?? 'ALL'})`);
     throw e;
   }
 }
-
-const wait = ms => new Promise(r => setTimeout(r, ms));
 
 function sumSeries(raw) {
   const v = raw?.data?.series?.[0];
@@ -87,41 +128,63 @@ export default async function handler() {
   const weekStart  = fmtDate(new Date(now.getTime() - 34 * 86400 * 1000));
 
   const errors = [];
+  // LP_ID ごとの月次 KPI を逐次取得（300ms間隔）
+  const lpData = {}; // { 'pathflow-v1': { pv, diag, book }, ... }
 
-  // 順次実行（200ms間隔）
-  let pv = 0, diag = 0, book = 0, weekly = [0,0,0,0,0];
+  for (const lpId of LP_DEFS) {
+    const row = { pv: 0, diag: 0, book: 0 };
 
-  try { pv = sumSeries(await ampFetch(auth, 'page_view', monthStart, today, 1)); }
-  catch(e) { errors.push(e.message); }
+    try { row.pv = sumSeries(await ampFetch(auth, 'page_view', monthStart, today, 1, lpId)); }
+    catch(e) { errors.push(e.message); }
+    await wait(300);
 
-  await wait(200);
+    try { row.diag = sumSeries(await ampFetch(auth, 'diagnosis_click', monthStart, today, 1, lpId)); }
+    catch(e) { errors.push(e.message); }
+    await wait(300);
 
-  try { diag = sumSeries(await ampFetch(auth, 'diagnosis_click', monthStart, today, 1)); }
-  catch(e) { errors.push(e.message); }
+    try { row.book = sumSeries(await ampFetch(auth, 'booking_complete', monthStart, today, 1, lpId)); }
+    catch(e) { errors.push(e.message); }
+    await wait(300);
 
-  await wait(200);
-
-  try { book = sumSeries(await ampFetch(auth, 'booking_complete', monthStart, today, 1)); }
-  catch(e) { errors.push(e.message); }
-
-  await wait(200);
-
-  try { weekly = weeklySlice(await ampFetch(auth, 'page_view', weekStart, today, 7)); }
-  catch(e) { errors.push(e.message); }
-
-  if (pv === 0 && diag === 0 && book === 0 && errors.length === 4) {
-    return new Response(JSON.stringify({ error: errors[0] }), { status: 502, headers });
+    lpData[lpId] = row;
   }
 
-  const kpiAll = { pv, diag, book };
-  const kpi    = { ALL: kpiAll };
-  const weeklyAll = { ALL: weekly };
-  LP_IDS.forEach(id => { kpi[id] = kpiAll; weeklyAll[id] = weekly; });
+  // 週次PV（ALLのみ）
+  let weeklyArr = [0, 0, 0, 0, 0];
+  try { weeklyArr = weeklySlice(await ampFetch(auth, 'page_view', weekStart, today, 7)); }
+  catch(e) { errors.push(e.message); }
+
+  // タブ別に集計
+  const sum = ids => ({
+    pv:   ids.reduce((a, id) => a + (lpData[id]?.pv   ?? 0), 0),
+    diag: ids.reduce((a, id) => a + (lpData[id]?.diag ?? 0), 0),
+    book: ids.reduce((a, id) => a + (lpData[id]?.book ?? 0), 0),
+  });
+
+  const allIds = LP_DEFS;
+  const kpi = {
+    ALL:          sum(allIds),
+    'pathflow-v1': sum(TABS['pathflow-v1']),
+    'shigyou-v1':  sum(TABS['shigyou-v1']),
+    'seisaku-v1':  sum(TABS['seisaku-v1']),
+  };
+
+  const weekly = {
+    ALL:          weeklyArr,
+    'pathflow-v1': weeklyArr,
+    'shigyou-v1':  weeklyArr,
+    'seisaku-v1':  weeklyArr,
+  };
 
   return new Response(
     JSON.stringify({
-      kpi, weekly: weeklyAll,
-      _meta: { lpIds: LP_IDS, generatedAt: new Date().toISOString(), errors: errors.length ? errors : null },
+      kpi, weekly,
+      _meta: {
+        lpDefs: LP_DEFS,
+        tabs: TABS,
+        generatedAt: new Date().toISOString(),
+        errors: errors.length ? errors : null,
+      },
     }),
     { status: 200, headers }
   );
