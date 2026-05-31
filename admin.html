@@ -113,6 +113,44 @@ canvas{max-height:180px}
 </head>
 <body>
 
+<!-- PASS GATE -->
+<div id="passGate" style="
+  position:fixed;inset:0;background:#0d1a36;
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;flex-direction:column;gap:20px;
+">
+  <div style="color:#c9a84c;font-size:22px;font-weight:900;letter-spacing:.1em">Nexccess 管理者ダッシュボード</div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <input id="passInput" type="password" placeholder="パスワードを入力"
+      style="padding:10px 16px;border-radius:8px;border:1px solid rgba(201,168,76,.4);
+             background:rgba(255,255,255,.08);color:#fff;font-size:14px;width:220px;outline:none;"
+      onkeydown="if(event.key==='Enter')checkPass()"
+    >
+    <button onclick="checkPass()" style="
+      background:#c9a84c;border:none;color:#0d1a36;
+      padding:10px 20px;border-radius:8px;font-weight:900;cursor:pointer;font-size:14px;
+    ">入室</button>
+  </div>
+  <div id="passErr" style="color:#c0392b;font-size:12px;display:none">パスワードが違います</div>
+</div>
+<script>
+(function(){
+  if(sessionStorage.getItem('nx_auth')==='ok'){
+    document.getElementById('passGate').style.display='none';
+  }
+})();
+function checkPass(){
+  const v = document.getElementById('passInput').value;
+  if(v==='nex2026'){
+    sessionStorage.setItem('nx_auth','ok');
+    document.getElementById('passGate').style.display='none';
+  } else {
+    document.getElementById('passErr').style.display='block';
+    document.getElementById('passInput').value='';
+  }
+}
+</script>
+
 <div class="header">
   <div class="header-left">
     <div class="header-logo">Nx</div>
@@ -227,7 +265,7 @@ const LP_LIST = [
   { id:'ALL',         label:'ALL（合算）',    url:'',                                     variant:'合算',        status:'live' },
   { id:'pathflow-v1', label:'Path-Flow Main', url:'https://main.pathflow.org/',           variant:'v1（稼働中）', status:'live' },
   { id:'shigyou-v1',   label:'Shigyo（士業）', url:'https://shigyo.pathflow.org/',         variant:'v1（稼働中）', status:'live' },
-  { id:'seisaku-v1',  label:'製作金融',        url:'https://www.seisakukinyukouko.site/', variant:'v1（稼働中）', status:'live' },
+  { id:'seisaku-v1',  label:'政策金融',        url:'https://www.seisakukinyukouko.site/', variant:'v1（稼働中）', status:'live' },
 ];
 
 let currentLP  = 'ALL';
