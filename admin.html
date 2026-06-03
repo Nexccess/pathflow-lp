@@ -251,6 +251,10 @@ function checkPass(){
         <span>📊</span><span class="ss-name">AI診断結果（製作金融）</span>
         <span class="ss-sheet">診断結果 | seisakukinyukouko.site</span>
       </a>
+      <a href="https://docs.google.com/spreadsheets/d/1KLQn2ZLHUTjzzUo_xrNCoGSYJkDRE1roSMIILPelFw4" target="_blank" class="ss-link">
+        <span>📊</span><span class="ss-name">AI診断結果（相続診断）</span>
+        <span class="ss-sheet">AI診断結果 | souzoku.nexccess.com</span>
+      </a>
     </div>
   </div>
 
@@ -264,8 +268,9 @@ function checkPass(){
 const LP_LIST = [
   { id:'ALL',         label:'ALL（合算）',    url:'',                                     variant:'合算',        status:'live' },
   { id:'pathflow-v1', label:'Path-Flow Main', url:'https://main.pathflow.org/',           variant:'v1（稼働中）', status:'live' },
-  { id:'shigyou-v1',   label:'Shigyo（士業）', url:'https://shigyo.pathflow.org/',         variant:'v1（稼働中）', status:'live' },
+  { id:'shigyou-v1',  label:'Shigyo（士業）', url:'https://shigyo.pathflow.org/',         variant:'v1（稼働中）', status:'live' },
   { id:'seisaku-v1',  label:'政策金融',        url:'https://www.seisakukinyukouko.site/', variant:'v1（稼働中）', status:'live' },
+  { id:'souzoku-v1',  label:'相続診断',        url:'https://souzoku.nexccess.com/',       variant:'v1（稼働中）', status:'live' },
 ];
 
 let currentLP  = 'ALL';
@@ -441,8 +446,8 @@ function loadMock() {
   const kpi  = { pv, diag, book };
   const weekly = Array.from({length:5}, () => Math.floor(Math.random()*150+20));
   _cache = {
-    kpi:    { ALL:kpi, 'pathflow-v1':kpi, 'shigyou-v1':kpi, 'seisaku-v1':kpi },
-    weekly: { ALL:weekly, 'pathflow-v1':weekly, 'shigyou-v1':weekly, 'seisaku-v1':weekly },
+    kpi:    { ALL:kpi, 'pathflow-v1':kpi, 'shigyou-v1':kpi, 'seisaku-v1':kpi, 'souzoku-v1':kpi },
+    weekly: { ALL:weekly, 'pathflow-v1':weekly, 'shigyou-v1':weekly, 'seisaku-v1':weekly, 'souzoku-v1':weekly },
   };
   renderFromCache();
 }
