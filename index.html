@@ -363,6 +363,23 @@ footer{background:var(--navy-dark);padding:40px 16px;}
 .diag-complete p{font-size:13px;color:#c8d4e0;line-height:1.75;}
 .complete-line-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#06C755;color:#fff;padding:15px;border-radius:10px;font-weight:900;font-size:14px;font-family:'Noto Sans JP',sans-serif;text-decoration:none;box-shadow:0 4px 16px rgba(6,199,85,.35);margin-top:8px;}
 .complete-close-btn{display:flex;align-items:center;justify-content:center;width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#c8d4e0;padding:13px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:8px;}
+
+/* ── MODALS ───────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);overflow-y:auto;padding:20px 16px;}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center;}
+.modal-box{background:#fff;border-radius:14px;max-width:640px;width:100%;margin:auto;padding:28px 24px 32px;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.22);}
+.modal-box h2{font-family:"Noto Sans JP",sans-serif;font-size:17px;font-weight:900;color:#0d1a36;margin-bottom:14px;padding-right:28px;}
+.modal-box p{font-size:13px;color:#2a3d5c;line-height:1.8;margin-bottom:10px;}
+.modal-box ul{padding-left:18px;margin-bottom:10px;}
+.modal-box ul li{font-size:13px;color:#2a3d5c;line-height:1.8;margin-bottom:4px;}
+.modal-section{margin-top:14px;}
+.modal-section-title{font-size:12px;font-weight:800;color:#192f60;letter-spacing:.04em;margin-bottom:6px;}
+.modal-close{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;border:none;background:#e8eef5;color:#2a3d5c;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.modal-close:hover{background:#d4dce8;}
+/* フッターリーガルリンク */
+.footer-legal-links{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);}
+.footer-legal-links a{font-size:11px;color:#666666;text-decoration:none;transition:color .2s;}
+.footer-legal-links a:hover{color:#9ab;}
 </style>
 </head>
 <body>
@@ -601,6 +618,13 @@ footer{background:var(--navy-dark);padding:40px 16px;}
     <div class="footer-col"><h5>Company</h5><ul><li>合同会社Nexccess</li><li>代理店・パートナー</li><li>お問い合わせ</li><li>プライバシーポリシー</li></ul></div>
   </div>
   <div class="footer-bottom"><span>© 2025 合同会社Nexccess. All Rights Reserved.</span><span class="footer-mark">Path-Flow Management Base</span></div>
+  <nav class="footer-legal-links">
+    <a href="javascript:void(0)" onclick="openModal('modal-privacy')">プライバシーポリシー</a>
+    <a href="javascript:void(0)" onclick="openModal('modal-disclaimer')">免責事項</a>
+    <a href="javascript:void(0)" onclick="openModal('modal-antisocial')">反社会的勢力への対応</a>
+    <a href="javascript:void(0)" onclick="openModal('modal-conflict')">利益相反管理方針</a>
+    <a href="javascript:void(0)" onclick="openModal('modal-compliance')">コンプライアンス方針</a>
+  </nav>
 </footer>
 
 <!-- AI診断 MODAL -->
@@ -629,7 +653,88 @@ footer{background:var(--navy-dark);padding:40px 16px;}
 </div>
 
 <!-- ═══════════════════════════════════════
-   SCRIPT: </body>直前に配置（v3.1必須）
+   SCRIPT: 
+<!-- ===== MODALS ===== -->
+<div class="modal-overlay" id="modal-privacy" onclick="closeModalOutside(event,'modal-privacy')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-privacy')">✕</button>
+    <h2>個人情報保護方針（プライバシーポリシー）</h2>
+    <p>当社は、金融コンサルティング業務を行うにあたり、個人情報の重要性を認識し、その適切な取扱いおよび保護を社会的責務と考え、以下の方針に基づき個人情報を取り扱います。</p>
+    <div class="modal-section"><div class="modal-section-title">1．個人情報の定義</div><p>個人情報とは、氏名、住所、電話番号、メールアドレス、勤務先、役職その他、特定の個人を識別できる情報、または他の情報と容易に照合することで特定の個人を識別できる情報をいいます。</p></div>
+    <div class="modal-section"><div class="modal-section-title">2．個人情報の取得</div><p>当社は、業務遂行上必要な範囲において、適正かつ公正な方法により個人情報を取得します。</p></div>
+    <div class="modal-section"><div class="modal-section-title">3．利用目的</div><ul><li>金融コンサルティング業務および関連サービスの提供</li><li>各種お問い合わせ、相談への対応</li><li>契約の締結、履行および管理</li><li>法令または金融関連規制に基づく対応</li><li>サービス品質向上および業務改善のための分析</li></ul></div>
+    <div class="modal-section"><div class="modal-section-title">4．安全管理措置</div><p>当社は、個人情報の漏えい、滅失、毀損、不正アクセス等を防止するため、適切な安全管理措置を講じます。</p></div>
+    <div class="modal-section"><div class="modal-section-title">5．第三者提供</div><p>当社は、次の場合を除き、本人の同意なく個人情報を第三者に提供しません。</p><ul><li>法令に基づく場合</li><li>人の生命、身体または財産の保護のために必要な場合</li><li>業務委託先に対し、業務遂行上必要な範囲で提供する場合</li></ul></div>
+    <div class="modal-section"><div class="modal-section-title">6．開示等の請求</div><p>本人から自己の個人情報について、開示、訂正、利用停止または削除の請求があった場合、法令に従い適切に対応します。</p></div>
+    <div class="modal-section"><div class="modal-section-title">7．法令遵守および継続的改善</div><p>当社は、個人情報保護に関する法令および関連ガイドラインを遵守し、本方針の継続的な見直しと改善に努めます。</p></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-antisocial" onclick="closeModalOutside(event,'modal-antisocial')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-antisocial')">✕</button>
+    <h2>反社会的勢力に対する基本方針</h2>
+    <p>当社は、健全な事業活動の維持および社会的責任を果たすため、反社会的勢力に対し、断固たる姿勢をもって以下の方針を定めます。</p>
+    <div class="modal-section"><ul><li>反社会的勢力との関係を一切遮断し、取引・契約その他の関係を行いません。</li><li>反社会的勢力による不当要求に対しては、組織として対応し、毅然とした態度でこれを拒絶します。</li><li>警察、弁護士等の外部専門機関と連携し、適切に対応します。</li><li>反社会的勢力への資金提供、便宜供与その他これに準ずる行為を一切行いません。</li><li>取引先が反社会的勢力に該当することが判明した場合、何らの催告を要せず契約の全部または一部を解除します。</li></ul></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-disclaimer" onclick="closeModalOutside(event,'modal-disclaimer')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-disclaimer')">✕</button>
+    <h2>免責事項（Disclaimer）</h2>
+    <p>当社ウェブサイトに掲載する情報は、一般的な情報提供を目的としたものであり、特定の投資行動、金融商品、取引の勧誘または推奨を目的とするものではありません。</p>
+    <p>当社は、掲載情報の正確性、完全性、最新性について万全を期していますが、その内容を保証するものではありません。</p>
+    <p>当該情報に基づき利用者が行った判断または行動により生じた損失について、当社は一切の責任を負いません。</p>
+    <p>最終的な意思決定は、利用者自身の責任において行うものとします。</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-conflict" onclick="closeModalOutside(event,'modal-conflict')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-conflict')">✕</button>
+    <h2>利益相反管理方針</h2>
+    <p>当社は、業務遂行にあたり、顧客の利益を最優先とします。</p>
+    <p>当社または第三者の利益が顧客の利益と相反するおそれがある場合には、適切な管理体制のもと、当該利益相反を防止または適切に管理し、公正かつ誠実に業務を遂行します。</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-compliance" onclick="closeModalOutside(event,'modal-compliance')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-compliance')">✕</button>
+    <h2>コンプライアンス・その他方針</h2>
+    <div class="modal-section"><div class="modal-section-title">業務範囲に関する方針</div><p>当社は、金融コンサルティング業務を主たる業務とし、法令に基づく登録・免許・許可を要する投資助言業、金融商品販売業、代理業その他の業務については、当該登録等を受けない限り実施しません。当社の提供する情報および助言は、最終的な投資判断や取引の実行を代替するものではありません。</p></div>
+    <div class="modal-section"><div class="modal-section-title">守秘義務に関する方針</div><p>当社は、業務上知り得た顧客および取引先に関する非公開情報、機密情報について、厳格な管理を行い、正当な理由なく第三者に開示または漏えいしません。</p></div>
+    <div class="modal-section"><div class="modal-section-title">コンプライアンス基本方針</div><p>当社は、関係法令および金融関連ガイドラインを遵守し、公正かつ誠実な業務運営を通じて、社会および顧客からの信頼確保に努めます。</p></div>
+    <div class="modal-section"><div class="modal-section-title">勧誘方針</div><p>当社は、業務に関連する説明・提案・勧誘にあたり、誤解を招く表示や強引な勧誘を行わず、顧客の判断を尊重した適切な情報提供を行います。</p></div>
+    <div class="modal-section"><div class="modal-section-title">知的財産権について</div><p>当社ウェブサイトに掲載されている文章、画像、資料その他のコンテンツに関する著作権および知的財産権は、当社または正当な権利者に帰属します。これらを無断で転載、複製、改変、配布する行為を禁止します。</p></div>
+  </div>
+</div>
+
+<script>
+/* ── Modal Controller ── */
+function openModal(id){
+  var el = document.getElementById(id);
+  if(el){ el.classList.add('open'); document.body.style.overflow='hidden'; }
+}
+function closeModal(id){
+  var el = document.getElementById(id);
+  if(el){ el.classList.remove('open'); document.body.style.overflow=''; }
+}
+function closeModalOutside(e, id){
+  if(e.target === document.getElementById(id)){ closeModal(id); }
+}
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay.open').forEach(function(el){
+      el.classList.remove('open');
+    });
+    document.body.style.overflow='';
+  }
+});
+</script>
+
+</body>直前に配置（v3.1必須）
 ═══════════════════════════════════════ -->
 <script>
 /* ── v3.1定数 ──────────────────────────── */
